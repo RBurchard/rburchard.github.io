@@ -11,8 +11,73 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Robin Burchard — Researcher &amp; Ph.D. Candidate">
-  <meta property="og:description" content="Ubiquitous Computing Group, University of Siegen. Research on Wearable Computing, Human Activity Recognition (HAR), and Multi-Modal Sensor Fusion.">
+  <meta property="og:description" content="Ubiquitous Computing Group, University of Siegen. Research on Wearable Computing, Human Activity Recognition (HAR), and Multi-Modal Sensor Fusion (HARMES Dataset).">
   <meta property="og:url" content="https://rburchard.github.io/">
+  <meta property="og:image" content="https://rburchard.github.io/assets/img/profile-placeholder.jpeg">
+  <link rel="canonical" href="https://rburchard.github.io/">
+
+  <!-- Structured Data: Schema.org Person & Featured HARMES Dataset -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://rburchard.github.io/#person",
+        "name": "Robin Burchard",
+        "givenName": "Robin",
+        "familyName": "Burchard",
+        "jobTitle": "Researcher and Ph.D. Candidate",
+        "url": "https://rburchard.github.io/",
+        "image": "https://rburchard.github.io/assets/img/profile-placeholder.jpeg",
+        "email": "mailto:robin.burchard@uni-siegen.de",
+        "worksFor": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Siegen",
+          "department": "Ubiquitous Computing Group, Department of Electrical Engineering and Computer Science",
+          "url": "https://ubicomp.eti.uni-siegen.de/home/team/index.html.en?lang=en"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Freiburg"
+        },
+        "knowsAbout": [
+          "Human Activity Recognition",
+          "Wearable Computing",
+          "Multi-Modal Sensor Fusion",
+          "HARMES Dataset",
+          "Deep Learning",
+          "Ubiquitous Computing"
+        ],
+        "sameAs": [
+          "https://orcid.org/0000-0002-4130-5287",
+          "https://scholar.google.com/citations?user=9-WU64IAAAAJ",
+          "https://github.com/rburchard",
+          "https://www.linkedin.com/in/robin-burchard-163744264/",
+          "https://www.researchgate.net/profile/Robin-Burchard",
+          "https://ubicomp.eti.uni-siegen.de/home/team/index.html.en?lang=en"
+        ]
+      },
+      {
+        "@type": "Dataset",
+        "name": "HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound",
+        "alternateName": "HARMES",
+        "description": "HARMES is a multi-modal wearable HAR dataset combining wrist-worn IMUs, atmospheric environmental sensors (humidity, temperature, pressure), and audio across 80+ hours of recordings from 20 participants performing 15 Activities of Daily Living.",
+        "url": "https://rburchard.github.io/harmes-website/",
+        "sameAs": [
+          "https://doi.org/10.5281/zenodo.19425718",
+          "https://arxiv.org/abs/2605.02596",
+          "https://github.com/RBurchard/HARMES"
+        ],
+        "creator": {
+          "@id": "https://rburchard.github.io/#person"
+        },
+        "isAccessibleForFree": true,
+        "license": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ]
+  }
+  </script>
 
   <!-- Local Favicon & Stylesheet (100% self-hosted, zero third-party requests) -->
   <link rel="icon" type="image/jpeg" href="assets/img/profile-placeholder.jpeg">
@@ -137,9 +202,28 @@
         </div>
 
         <div id="pinned-publications" class="pinned-grid">
-          <noscript>
-            <p>Please enable JavaScript or visit the <a href="publications.html">Publications page</a> to view highlighted works.</p>
-          </noscript>
+          <!-- Pre-rendered for instant SEO indexing; enhanced by publications.js -->
+          <article class="pub-card-pinned featured-first">
+            <img src="assets/img/harmes-icon.png" alt="HARMES Dataset Logo" class="pub-card-icon" loading="lazy">
+            <div class="pub-card-body">
+              <div class="pub-meta-top">
+                <span class="badge badge-pinned">Featured Dataset &amp; Benchmark</span>
+                <span class="badge badge-year">2026</span>
+              </div>
+              <h3 class="pub-title">
+                <a href="https://rburchard.github.io/harmes-website/">HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound</a>
+              </h3>
+              <p class="pub-authors"><span class="author-self">Robin Burchard</span>, Pascal-Andr&eacute; Br&uuml;ckner, Marius Bock, J&uuml;rgen Gall, Kristof Van Laerhoven</p>
+              <p class="pub-venue">arXiv Preprint</p>
+              <p class="pub-desc">A multi-modal wearable HAR dataset combining wrist-worn IMUs, atmospheric environmental sensors (humidity, temperature, pressure), and audio &mdash; featuring over 80 hours of recordings from 20 participants across 15 Activities of Daily Living.</p>
+              <div class="pub-links">
+                <a href="https://rburchard.github.io/harmes-website/" class="btn btn-sm btn-gold"><span>Project Website</span></a>
+                <a href="https://arxiv.org/abs/2605.02596" class="btn btn-sm"><span>Paper (arXiv)</span></a>
+                <a href="https://doi.org/10.5281/zenodo.19425718" class="btn btn-sm"><span>Dataset (Zenodo)</span></a>
+                <a href="https://github.com/RBurchard/HARMES" class="btn btn-sm"><span>Code (GitHub)</span></a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
