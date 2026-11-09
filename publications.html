@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Publications — Robin Burchard</title>
+  <meta name="description" content="Scientific publications, datasets, and benchmarks by Robin Burchard, Ubiquitous Computing Group, University of Siegen.">
+  <meta name="author" content="Robin Burchard">
+  <meta name="theme-color" content="#0b2239">
+
+  <link rel="icon" type="image/svg+xml" href="assets/img/profile-placeholder.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">RB</span>
+        <span>Robin Burchard</span>
+        <span class="brand-subtitle">University of Siegen</span>
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul id="nav-links" class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="cv.html" class="nav-link">About / CV</a></li>
+          <li><a href="publications.html" class="nav-link active" aria-current="page">Publications</a></li>
+          <li><a href="teaching.html" class="nav-link">Teaching</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme"></button>
+        <button id="mobile-menu-btn" class="mobile-menu-btn" type="button" aria-label="Toggle menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="hero-eyebrow">Research Output</span>
+        <h1 class="page-title">Publications</h1>
+        <p class="page-lead">
+          Peer-reviewed journal articles, conference &amp; workshop papers, datasets, and preprints.
+          Automatically synchronized from <a href="https://orcid.org/0000-0002-4130-5287" target="_blank" rel="noopener noreferrer">ORCID</a> and <a href="https://scholar.google.com/citations?user=9-WU64IAAAAJ" target="_blank" rel="noopener noreferrer">Google Scholar</a> / OpenAlex.
+        </p>
+      </div>
+    </section>
+
+    <!-- Highlighted / Pinned Section -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Pinned &amp; Highlighted Works</h2>
+            <p class="section-subtitle">Manually selected flagship datasets and publications</p>
+          </div>
+        </div>
+
+        <div id="pinned-publications" class="pinned-grid"></div>
+      </div>
+    </section>
+
+    <!-- All Publications (Auto-Updated) -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">All Publications</h2>
+            <p class="section-subtitle">Complete chronological bibliography</p>
+          </div>
+          <div class="sync-status">
+            <span class="sync-dot"></span>
+            <span id="pub-sync-timestamp">Auto-synced via GitHub Actions</span>
+          </div>
+        </div>
+
+        <!-- Search & Type Filter Bar -->
+        <div class="pub-controls">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input id="pub-search" type="search" class="search-input" placeholder="Search by title, co-author, venue, or year..." aria-label="Search publications">
+          </div>
+
+          <div class="filter-pills" role="group" aria-label="Filter publications by type">
+            <button type="button" class="filter-btn active" data-pub-filter="all">All</button>
+            <button type="button" class="filter-btn" data-pub-filter="journal">Journal Articles</button>
+            <button type="button" class="filter-btn" data-pub-filter="conference">Conferences &amp; Chapters</button>
+            <button type="button" class="filter-btn" data-pub-filter="preprint">Preprints</button>
+          </div>
+        </div>
+
+        <div id="all-publications"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Robin Burchard</strong> &middot; Ubiquitous Computing Group, University of Siegen
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="cv.html">About / CV</a>
+        <a href="publications.html">Publications</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="https://rburchard.github.io/harmes-website/">HARMES Dataset</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/publications.js"></script>
+</body>
+</html>

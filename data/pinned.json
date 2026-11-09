@@ -1,0 +1,110 @@
+[
+  {
+    "id": "harmes-2026",
+    "match_title": "HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound",
+    "title": "HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound",
+    "authors": [
+      "Robin Burchard",
+      "Pascal-André Brückner",
+      "Marius Bock",
+      "Jürgen Gall",
+      "Kristof Van Laerhoven"
+    ],
+    "year": 2026,
+    "venue": "arXiv Preprint",
+    "type": "preprint",
+    "badge": "Featured Dataset & Benchmark",
+    "icon": "assets/img/harmes-icon.png",
+    "description": "A multi-modal wearable HAR dataset combining wrist-worn IMUs, atmospheric environmental sensors (humidity, temperature, pressure), and audio — featuring over 80 hours of recordings from 20 participants across 15 Activities of Daily Living.",
+    "links": [
+      {
+        "label": "Project Website",
+        "url": "https://rburchard.github.io/harmes-website/",
+        "icon": "globe",
+        "primary": true
+      },
+      {
+        "label": "Paper (arXiv)",
+        "url": "https://arxiv.org/abs/2605.02596",
+        "icon": "arxiv"
+      },
+      {
+        "label": "PDF",
+        "url": "https://arxiv.org/pdf/2605.02596",
+        "icon": "pdf"
+      },
+      {
+        "label": "Dataset (Zenodo)",
+        "url": "https://doi.org/10.5281/zenodo.19425718",
+        "icon": "database"
+      },
+      {
+        "label": "Code (GitHub)",
+        "url": "https://github.com/RBurchard/HARMES",
+        "icon": "github"
+      }
+    ],
+    "bibtex": "@article{burchard2026harmes,\n  title={HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound},\n  author={Burchard, Robin and Br{\\\"u}ckner, Pascal-Andr{\\'e} and Bock, Marius and Gall, J{\\\"u}rgen and Van Laerhoven, Kristof},\n  journal={arXiv preprint arXiv:2605.02596},\n  year={2026},\n  url={https://arxiv.org/abs/2605.02596}\n}",
+    "doi": "10.48550/arxiv.2605.02596"
+  },
+  {
+    "id": "handwashing-scidata-2026",
+    "match_title": "A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables",
+    "title": "A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables",
+    "authors": [
+      "Robin Burchard",
+      "Kristina Kirsten",
+      "Marcel Miché",
+      "Philipp Scholl",
+      "Bert Arnrich",
+      "Kristof Van Laerhoven",
+      "Roselind Lieb",
+      "Karina Wahl"
+    ],
+    "year": 2026,
+    "venue": "Scientific Data (Nature Portfolio)",
+    "type": "journal-article",
+    "badge": "Journal Article · Scientific Data",
+    "description": "Large-scale in-the-wild wearable inertial dataset and benchmark for detecting everyday handwashing episodes in unconstrained daily life.",
+    "links": [
+      {
+        "label": "DOI / Paper",
+        "url": "https://doi.org/10.1038/s41597-026-06698-2",
+        "icon": "doi",
+        "primary": true
+      },
+      {
+        "label": "PDF",
+        "url": "https://www.nature.com/articles/s41597-026-06698-2.pdf",
+        "icon": "pdf"
+      }
+    ],
+    "doi": "10.1038/s41597-026-06698-2",
+    "bibtex": "@article{burchard2026real,\n  title = {A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables},\n  author = {Robin Burchard and Kristina Kirsten and Marcel Miché and Philipp Scholl and Bert Arnrich and Kristof Van Laerhoven and Roselind Lieb and Karina Wahl},\n  year = {2026},\n  journal = {Scientific Data},\n  doi = {10.1038/s41597-026-06698-2},\n}"
+  },
+  {
+    "id": "atmospheric-sensing-2026",
+    "match_title": "Improved Strategies for Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection",
+    "title": "Improved Strategies for Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection",
+    "authors": [
+      "Robin Burchard",
+      "Hurriat Ali",
+      "Kristof Van Laerhoven"
+    ],
+    "year": 2026,
+    "venue": "Springer Communications in Computer and Information Science / Book Chapter",
+    "type": "book-chapter",
+    "badge": "Multi-Modal Sensing",
+    "description": "Investigates barometric, humidity, and temperature sensing fused with wrist IMU data to improve the robustness of wearable handwashing detection.",
+    "links": [
+      {
+        "label": "DOI / Paper",
+        "url": "https://doi.org/10.1007/978-3-032-13312-0_18",
+        "icon": "doi",
+        "primary": true
+      }
+    ],
+    "doi": "10.1007/978-3-032-13312-0_18",
+    "bibtex": "@incollection{burchard2026improved,\n  title = {Improved Strategies for Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection},\n  author = {Robin Burchard and Hurriat Ali and Kristof Van Laerhoven},\n  year = {2026},\n  booktitle = {Lecture notes in computer science},\n  doi = {10.1007/978-3-032-13312-0_18},\n}"
+  }
+]

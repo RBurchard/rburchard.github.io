@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Robin Burchard Profile Photo Placeholder">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b2239" />
+      <stop offset="55%" stop-color="#153e6b" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="160" cy="160" r="154" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="6" />
+  <!-- Subtle Inner Ring (matching HARMES shield motif) -->
+  <circle cx="160" cy="160" r="140" fill="none" stroke="#fbbf24" stroke-opacity="0.35" stroke-width="2" />
+  <!-- Stylized Avatar Silhouette -->
+  <circle cx="160" cy="122" r="46" fill="#f8fafc" fill-opacity="0.92" />
+  <path d="M78 265 C78 210, 114 185, 160 185 C206 185, 242 210, 242 265" fill="#f8fafc" fill-opacity="0.92" />
+  <!-- Subtle Initials Badge -->
+  <rect x="115" y="252" width="90" height="28" rx="14" fill="#0b2239" stroke="#fbbf24" stroke-width="2" />
+  <text x="160" y="271" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="1">R. BURCHARD</text>
+</svg>
