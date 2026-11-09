@@ -2,8 +2,8 @@ name: Update Publications
 
 on:
   schedule:
-    # Runs every Monday and Thursday at 04:00 UTC
-    - cron: '0 4 * * 1,4'
+    # Runs daily at 04:00 UTC
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 permissions:
