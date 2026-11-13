@@ -1,8 +1,9 @@
 {
-  "updated_at": "2026-11-12T12:04:37Z",
+  "updated_at": "2026-11-13T08:00:51Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
+  "total_citations": 52,
   "publications": [
     {
       "title": "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset",
@@ -17,6 +18,7 @@
       "doi": "10.48550/arxiv.2606.27886",
       "url": "https://arxiv.org/abs/2606.27886",
       "pdf_url": "https://arxiv.org/pdf/2606.27886",
+      "cited_by_count": 0,
       "source": "openalex",
       "openalex_id": "https://openalex.org/W7166570549",
       "bibtex": "@article{mohamady2026comparison,\n  title = {A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset},\n  author = {Ahmed Mohamady and Robin Burchard and Kristof Van Laerhoven},\n  year = {2026},\n  journal = {arXiv Preprint},\n  doi = {10.48550/arxiv.2606.27886},\n}"
@@ -41,6 +43,7 @@
       "pdf_url": "https://www.nature.com/articles/s41597-026-06698-2.pdf",
       "source": "orcid",
       "put_code": 204805774,
+      "cited_by_count": 2,
       "bibtex": "@article{burchard2026real,\n  title = {A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables},\n  author = {Robin Burchard and Kristina Kirsten and Marcel Miché and Philipp Scholl and Bert Arnrich and Kristof Van Laerhoven and Roselind Lieb and Karina Wahl},\n  year = {2026},\n  journal = {Scientific Data},\n  doi = {10.1038/s41597-026-06698-2},\n}"
     },
     {
@@ -58,6 +61,7 @@
       "doi": "10.48550/arxiv.2605.02596",
       "url": "https://arxiv.org/abs/2605.02596",
       "pdf_url": "https://arxiv.org/pdf/2605.02596",
+      "cited_by_count": 3,
       "source": "openalex",
       "openalex_id": "https://openalex.org/W7160246476",
       "bibtex": "@article{burchard2026harmes,\n  title = {HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound},\n  author = {Robin Burchard and Pascal-André Brückner and Marius Bock and Jürgen Gall and Kristof Van Laerhoven},\n  year = {2026},\n  journal = {arXiv Preprint},\n  doi = {10.48550/arxiv.2605.02596},\n}"
@@ -77,6 +81,7 @@
       "pdf_url": "",
       "source": "orcid",
       "put_code": 201202288,
+      "cited_by_count": 2,
       "bibtex": "@incollection{burchard2026improved,\n  title = {Improved Strategies for Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection},\n  author = {Robin Burchard and Hurriat Ali and Kristof Van Laerhoven},\n  year = {2026},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-032-13312-0_18},\n}"
     },
     {
@@ -93,6 +98,7 @@
       "pdf_url": "",
       "source": "orcid",
       "put_code": 200989181,
+      "cited_by_count": 2,
       "bibtex": "@inproceedings{burchard2025enhancing,\n  title = {Enhancing Wearable Tap Water Audio Detection Through Subclass Annotation in the HD-Epic Dataset},\n  author = {Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Companion of the 2025 ACM International Joint Conference on Pervasive and Ubiquitous Computing},\n  doi = {10.1145/3714394.3756153},\n}"
     },
     {
@@ -118,6 +124,7 @@
       "pdf_url": "https://dl.acm.org/doi/pdf/10.1145/3715071.3750434",
       "source": "orcid",
       "put_code": 193695217,
+      "cited_by_count": 1,
       "bibtex": "@inproceedings{kirsten2025exploring,\n  title = {Exploring Wearable-Based Detection of Compulsive Handwashing in a Non-Controlled Setting: A Case Study},\n  author = {Kristina Kirsten and Robin Burchard and Amatya Mackintosh and Marcel Miché and Dorothée Bentz and Klaus Bader and Jannis Behr and Roselind Lieb and Kristof Van Laerhoven and Bert Arnrich and Karina Wahl},\n  year = {2025},\n  booktitle = {ACM International Symposium on Wearable Computers (ISWC)},\n  doi = {10.1145/3715071.3750434},\n}"
     },
     {
@@ -134,6 +141,7 @@
       "pdf_url": "https://arxiv.org/pdf/2410.03549",
       "source": "orcid",
       "put_code": 177640730,
+      "cited_by_count": 7,
       "bibtex": "@incollection{burchard2025multi,\n  title = {Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection},\n  author = {Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_4},\n}"
     },
     {
@@ -155,6 +163,7 @@
       "pdf_url": "https://arxiv.org/pdf/2410.02790",
       "source": "orcid",
       "put_code": 177640731,
+      "cited_by_count": 3,
       "bibtex": "@incollection{karande2025raising,\n  title = {Raising the Bar(Ometer): Identifying a User’s Stair and Lift Usage Through Wearable Sensor Data Analysis},\n  author = {Hrishikesh Balkrishna Karande and Ravikiran Arasur Thippeswamy Shivalingappa and Abdelhafid Nassim Yaici and Iman Haghbin and Niravkumar Bavadiya and Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_14},\n}"
     },
     {
@@ -171,6 +180,7 @@
       "pdf_url": "https://arxiv.org/pdf/2510.21282",
       "source": "orcid",
       "put_code": 200989180,
+      "cited_by_count": 1,
       "bibtex": "@inproceedings{chandankar2025sensor,\n  title = {Sensor-Specific Transformer (PatchTST) Ensembles with Test-Matched Augmentation},\n  author = {Pavankumar Chandankar and Robin Burchard},\n  year = {2025},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3714394.3756196},\n}"
     },
     {
@@ -194,6 +204,7 @@
       "pdf_url": "",
       "source": "orcid",
       "put_code": 195085227,
+      "cited_by_count": 2,
       "bibtex": "@inproceedings{k2025supervised,\n  title = {The Supervised Learning Dilemma: Lessons Learned from a Study in-the-Wild},\n  author = {Kirsten, K. and Burchard, R. and Bauer, O. and Miché, M. and Scholl, P. and Wahl, K. and Lieb, R. and Laerhoven, K.V. and Arnrich, B.},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_12},\n}"
     },
     {
@@ -212,6 +223,7 @@
       "pdf_url": "",
       "source": "orcid",
       "put_code": 167998863,
+      "cited_by_count": 2,
       "bibtex": "@inproceedings{salunkhe2024augmentation,\n  title = {Augmentation Appproaches to Refine Wearable Human Activity Recognition},\n  author = {Somesh Salunkhe and Shubham Shinde and Pradnyesh Patil and Robin Burchard},\n  year = {2024},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3675094.3678464},\n}"
     },
     {
@@ -229,6 +241,7 @@
       "pdf_url": "https://dl.acm.org/doi/pdf/10.1145/3675094.3678454?download=true",
       "source": "orcid",
       "put_code": 167998864,
+      "cited_by_count": 1,
       "bibtex": "@inproceedings{hopp2024improving,\n  title = {TA-DA! - Improving Activity Recognition using Temporal Adapters and Data Augmentation},\n  author = {Maximilian Hopp and Helge Hartleb and Robin Burchard},\n  year = {2024},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3675094.3678454},\n}"
     },
     {
@@ -249,6 +262,7 @@
       "pdf_url": "https://doi.org/10.1016/j.jocrd.2023.100845",
       "source": "orcid",
       "put_code": 146615194,
+      "cited_by_count": 13,
       "bibtex": "@article{wahl2023real,\n  title = {Real-time detection of obsessive-compulsive hand washing with wearables: Research procedure, usefulness and discriminative performance},\n  author = {Karina Wahl and Philipp M. Scholl and Marcel Miché and Silvan Wirth and Robin Burchard and Roselind Lieb},\n  year = {2023},\n  journal = {Journal of Obsessive-Compulsive and Related Disorders},\n  doi = {10.1016/j.jocrd.2023.100845},\n}"
     },
     {
@@ -268,6 +282,7 @@
       "pdf_url": "https://dl.acm.org/doi/pdf/10.1145/3544793.3563428",
       "source": "orcid",
       "put_code": 195085233,
+      "cited_by_count": 13,
       "bibtex": "@inproceedings{r2023washspot,\n  title = {WashSpot: Real-Time Spotting and Detection of Enacted Compulsive Hand Washing with Wearable Devices},\n  author = {Burchard, R. and Scholl, P.M. and Lieb, R. and Van Laerhoven, K. and Wahl, K.},\n  year = {2023},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3544793.3563428},\n}"
     }
   ]

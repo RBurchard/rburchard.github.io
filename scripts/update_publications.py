@@ -138,6 +138,7 @@ def fetch_openalex_works() -> list:
 
         landing_url = loc.get("landing_page_url") or (f"https://doi.org/{doi}" if doi else "")
         pdf_url = loc.get("pdf_url") or ((item.get("open_access") or {}).get("oa_url") or "")
+        cited_by_count = int(item.get("cited_by_count") or 0)
 
         works.append({
             "title": title,
@@ -148,6 +149,7 @@ def fetch_openalex_works() -> list:
             "doi": doi,
             "url": landing_url,
             "pdf_url": pdf_url,
+            "cited_by_count": cited_by_count,
             "source": "openalex",
             "openalex_id": item.get("id", ""),
         })
@@ -215,7 +217,7 @@ def fetch_orcid_works() -> list:
 
 def enrich_from_crossref(work: dict):
     doi = work.get("doi")
-    if not doi or (work.get("authors") and work.get("venue")):
+    if not doi or (work.get("authors") and work.get("venue") and work.get("cited_by_count") is not None):
         return
     try:
         url = f"https://api.crossref.org/works/{urllib.parse.quote(doi)}"
@@ -234,6 +236,8 @@ def enrich_from_crossref(work: dict):
             containers = data.get("container-title") or []
             if containers:
                 work["venue"] = clean_text(containers[0])
+        if work.get("cited_by_count") is None and "is-referenced-by-count" in data:
+            work["cited_by_count"] = int(data.get("is-referenced-by-count") or 0)
     except Exception:
         pass
 
@@ -277,6 +281,8 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
             target["pdf_url"] = item["pdf_url"]
         if item.get("put_code"):
             target["put_code"] = item["put_code"]
+        if item.get("cited_by_count") is not None:
+            target["cited_by_count"] = max(int(target.get("cited_by_count") or 0), int(item.get("cited_by_count") or 0))
         if item.get("type") and target.get("type") == "preprint" and item["type"] != "preprint":
             if "arxiv" not in (target.get("venue") or "").lower():
                 target["type"] = item["type"]
@@ -320,6 +326,8 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
             elif "arxiv" in work["venue"].lower():
                 work["venue"] = "arXiv Preprint"
                 work["type"] = "preprint"
+        if work.get("cited_by_count") is None:
+            work["cited_by_count"] = 0
         work["bibtex"] = generate_bibtex(work)
 
     # Sort by year descending, then title
@@ -355,6 +363,7 @@ def main():
                         p["doi"] = m["doi"]
                     if not p.get("bibtex") and m.get("bibtex"):
                         p["bibtex"] = m["bibtex"]
+                    p["cited_by_count"] = int(m.get("cited_by_count") or 0)
                     if not p.get("links"):
                         links = []
                         if m.get("doi"):
@@ -373,6 +382,7 @@ def main():
         "orcid": ORCID_ID,
         "openalex_id": OPENALEX_AUTHOR_ID,
         "count": len(merged),
+        "total_citations": sum(int(w.get("cited_by_count") or 0) for w in merged),
         "publications": merged,
     }
 
