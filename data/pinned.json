@@ -46,7 +46,7 @@
     ],
     "bibtex": "@article{burchard2026harmes,\n  title={HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound},\n  author={Burchard, Robin and Br{\\\"u}ckner, Pascal-Andr{\\'e} and Bock, Marius and Gall, J{\\\"u}rgen and Van Laerhoven, Kristof},\n  journal={arXiv preprint arXiv:2605.02596},\n  year={2026},\n  url={https://arxiv.org/abs/2605.02596}\n}",
     "doi": "10.48550/arxiv.2605.02596",
-    "cited_by_count": 3
+    "cited_by_count": 4
   },
   {
     "id": "handwashing-scidata-2026",
@@ -82,7 +82,7 @@
     ],
     "doi": "10.1038/s41597-026-06698-2",
     "bibtex": "@article{burchard2026real,\n  title = {A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables},\n  author = {Robin Burchard and Kristina Kirsten and Marcel Miché and Philipp Scholl and Bert Arnrich and Kristof Van Laerhoven and Roselind Lieb and Karina Wahl},\n  year = {2026},\n  journal = {Scientific Data},\n  doi = {10.1038/s41597-026-06698-2},\n}",
-    "cited_by_count": 2
+    "cited_by_count": 3
   },
   {
     "id": "atmospheric-sensing-2026",

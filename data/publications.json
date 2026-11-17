@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T12:22:38Z",
+  "updated_at": "2026-11-17T12:42:28Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
-  "total_citations": 53,
+  "total_citations": 59,
   "publications": [
     {
       "title": "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset",
@@ -43,7 +43,7 @@
       "pdf_url": "https://www.nature.com/articles/s41597-026-06698-2.pdf",
       "source": "orcid",
       "put_code": 204805774,
-      "cited_by_count": 2,
+      "cited_by_count": 3,
       "bibtex": "@article{burchard2026real,\n  title = {A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables},\n  author = {Robin Burchard and Kristina Kirsten and Marcel Miché and Philipp Scholl and Bert Arnrich and Kristof Van Laerhoven and Roselind Lieb and Karina Wahl},\n  year = {2026},\n  journal = {Scientific Data},\n  doi = {10.1038/s41597-026-06698-2},\n}"
     },
     {
@@ -61,7 +61,7 @@
       "doi": "10.48550/arxiv.2605.02596",
       "url": "https://arxiv.org/abs/2605.02596",
       "pdf_url": "https://arxiv.org/pdf/2605.02596",
-      "cited_by_count": 3,
+      "cited_by_count": 4,
       "source": "openalex",
       "openalex_id": "https://openalex.org/W7160246476",
       "bibtex": "@article{burchard2026harmes,\n  title = {HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound},\n  author = {Robin Burchard and Pascal-André Brückner and Marius Bock and Jürgen Gall and Kristof Van Laerhoven},\n  year = {2026},\n  journal = {arXiv Preprint},\n  doi = {10.48550/arxiv.2605.02596},\n}"
@@ -204,7 +204,7 @@
       "pdf_url": "",
       "source": "orcid",
       "put_code": 195085227,
-      "cited_by_count": 2,
+      "cited_by_count": 3,
       "bibtex": "@inproceedings{k2025supervised,\n  title = {The Supervised Learning Dilemma: Lessons Learned from a Study in-the-Wild},\n  author = {Kirsten, K. and Burchard, R. and Bauer, O. and Miché, M. and Scholl, P. and Wahl, K. and Lieb, R. and Laerhoven, K.V. and Arnrich, B.},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_12},\n}"
     },
     {
@@ -241,7 +241,7 @@
       "pdf_url": "https://dl.acm.org/doi/pdf/10.1145/3675094.3678454?download=true",
       "source": "orcid",
       "put_code": 167998864,
-      "cited_by_count": 1,
+      "cited_by_count": 3,
       "bibtex": "@inproceedings{hopp2024improving,\n  title = {TA-DA! - Improving Activity Recognition using Temporal Adapters and Data Augmentation},\n  author = {Maximilian Hopp and Helge Hartleb and Robin Burchard},\n  year = {2024},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3675094.3678454},\n}"
     },
     {
@@ -262,7 +262,7 @@
       "pdf_url": "https://doi.org/10.1016/j.jocrd.2023.100845",
       "source": "orcid",
       "put_code": 146615194,
-      "cited_by_count": 13,
+      "cited_by_count": 14,
       "bibtex": "@article{wahl2023real,\n  title = {Real-time detection of obsessive-compulsive hand washing with wearables: Research procedure, usefulness and discriminative performance},\n  author = {Karina Wahl and Philipp M. Scholl and Marcel Miché and Silvan Wirth and Robin Burchard and Roselind Lieb},\n  year = {2023},\n  journal = {Journal of Obsessive-Compulsive and Related Disorders},\n  doi = {10.1016/j.jocrd.2023.100845},\n}"
     },
     {
