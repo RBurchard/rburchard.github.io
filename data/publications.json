@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-17T12:42:28Z",
+  "updated_at": "2026-11-18T12:34:27Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
-  "total_citations": 59,
+  "total_citations": 60,
   "publications": [
     {
       "title": "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset",
@@ -163,7 +163,7 @@
       "pdf_url": "https://arxiv.org/pdf/2410.02790",
       "source": "orcid",
       "put_code": 177640731,
-      "cited_by_count": 4,
+      "cited_by_count": 5,
       "bibtex": "@incollection{karande2025raising,\n  title = {Raising the Bar(Ometer): Identifying a User’s Stair and Lift Usage Through Wearable Sensor Data Analysis},\n  author = {Hrishikesh Balkrishna Karande and Ravikiran Arasur Thippeswamy Shivalingappa and Abdelhafid Nassim Yaici and Iman Haghbin and Niravkumar Bavadiya and Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_14},\n}"
     },
     {
