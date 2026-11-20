@@ -14,6 +14,7 @@ import html
 import json
 import os
 import re
+import unicodedata
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -23,6 +24,7 @@ ORCID_ID = "0000-0002-4130-5287"
 OPENALEX_AUTHOR_ID = "A5084607935"
 OUTPUT_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "publications.json")
 PINNED_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "pinned.json")
+EQUAL_FIRST_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "equal_first_author.json")
 
 HEADERS = {
     "User-Agent": "RobinBurchardAcademicSite/1.0 (https://rburchard.github.io; mailto:robin.burchard@uni-siegen.de)",
@@ -41,6 +43,30 @@ def normalize_title(title: str) -> str:
         return ""
     # Replace non-alphanumeric with empty string for fuzzy deduplication
     return re.sub(r"[^a-z0-9]+", "", title.lower())
+
+
+def author_list_quality(authors: list) -> int:
+    score = 0
+    for a in (authors or []):
+        s = (a or "").strip()
+        if not s or "," in s:
+            continue
+        first_tok = s.split()[0].rstrip(".")
+        if len(first_tok) > 1:
+            score += 1
+    return score
+
+
+def normalize_author_key(name: str) -> str:
+    n = (name or "").replace("Jüergen Gall", "Jürgen Gall").strip()
+    if "," in n:
+        parts = [p.strip() for p in n.split(",", 1)]
+        n = f"{parts[1]} {parts[0]}".strip()
+    n_ascii = unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode("ascii").lower()
+    tokens = [t.strip(".") for t in re.split(r"[\s\-]+", n_ascii) if t.strip(".")]
+    if len(tokens) >= 2:
+        tokens = [tokens[0]] + [t for t in tokens[1:-1] if len(t) > 1] + [tokens[-1]]
+    return " ".join(tokens)
 
 
 def clean_text(text: str) -> str:
@@ -343,8 +369,13 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
         # Prefer richer fields
         if (item.get("year") or 0) > (target.get("year") or 0):
             target["year"] = item["year"]
-        if len(item.get("authors") or []) > len(target.get("authors") or []):
-            target["authors"] = item["authors"]
+        item_auths = item.get("authors") or []
+        target_auths = target.get("authors") or []
+        if len(item_auths) > len(target_auths) or (
+            len(item_auths) == len(target_auths)
+            and author_list_quality(item_auths) > author_list_quality(target_auths)
+        ):
+            target["authors"] = item_auths
         if item.get("venue") and (not target.get("venue") or len(item["venue"]) < len(target["venue"]) or "corr" in target["venue"].lower()):
             target["venue"] = item["venue"]
         if item.get("doi") and not target.get("doi"):
@@ -604,6 +635,61 @@ def fetch_citing_works_map(all_openalex_ids: list):
     return citations_by_target, had_error
 
 
+def compute_stats(merged: list) -> dict:
+    total_publications = len(merged)
+    cites_sorted = sorted((int(w.get("cited_by_count") or 0) for w in merged), reverse=True)
+    total_citations = sum(cites_sorted)
+
+    h_index = 0
+    for idx, c in enumerate(cites_sorted, 1):
+        if c >= idx:
+            h_index = idx
+        else:
+            break
+
+    first_author_count = 0
+    equal_first_author_count = 0
+    coauthor_keys = set()
+    year_counts = {}
+
+    for w in merged:
+        authors = w.get("authors") or []
+        is_listed_first = bool(authors) and "burchard" in authors[0].lower()
+        is_equal_first = bool(w.get("equal_first_author"))
+        if is_listed_first or is_equal_first:
+            first_author_count += 1
+        if is_equal_first and not is_listed_first:
+            equal_first_author_count += 1
+
+        for a in authors:
+            if not a or "burchard" in a.lower():
+                continue
+            key = normalize_author_key(a)
+            if key:
+                coauthor_keys.add(key)
+
+        for c in (w.get("citations") or []):
+            cy = c.get("year")
+            if isinstance(cy, int) and cy > 0:
+                year_counts[cy] = year_counts.get(cy, 0) + 1
+
+    citations_by_year = []
+    if year_counts:
+        min_y, max_y = min(year_counts), max(year_counts)
+        for y in range(min_y, max_y + 1):
+            citations_by_year.append({"year": y, "count": year_counts.get(y, 0)})
+
+    return {
+        "total_publications": total_publications,
+        "total_citations": total_citations,
+        "h_index": h_index,
+        "first_author_count": first_author_count,
+        "equal_first_author_count": equal_first_author_count,
+        "unique_coauthors": len(coauthor_keys),
+        "citations_by_year": citations_by_year,
+    }
+
+
 def main():
     prev_by_doi = {}
     prev_by_title = {}
@@ -716,6 +802,31 @@ def main():
         work["citations"] = dedup_citing
         work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), len(dedup_citing))
 
+    # Tag equal-contribution / shared first-author works from equal_first_author.json
+    eq_dois = set()
+    eq_titles = set()
+    if os.path.exists(EQUAL_FIRST_PATH):
+        try:
+            with open(EQUAL_FIRST_PATH, "r", encoding="utf-8") as f:
+                eq_entries = json.load(f)
+            for e in eq_entries:
+                if e.get("doi"):
+                    eq_dois.add(normalize_doi(e["doi"]))
+                if e.get("match_title"):
+                    eq_titles.add(normalize_title(e["match_title"]))
+        except Exception as e:
+            print(f"[WARN] Could not read equal_first_author.json: {e}")
+
+    for work in merged:
+        w_doi = normalize_doi(work.get("doi", ""))
+        w_title = normalize_title(work.get("title", ""))
+        if (w_doi and w_doi in eq_dois) or (w_title and w_title in eq_titles):
+            work["equal_first_author"] = True
+        else:
+            work.pop("equal_first_author", None)
+
+    stats = compute_stats(merged)
+
     # Back-populate pinned.json enriched fields (authors, doi, bibtex, links, citations)
     if pinned_list:
         for p in pinned_list:
@@ -751,7 +862,8 @@ def main():
         "orcid": ORCID_ID,
         "openalex_id": OPENALEX_AUTHOR_ID,
         "count": len(merged),
-        "total_citations": sum(int(w.get("cited_by_count") or 0) for w in merged),
+        "total_citations": stats["total_citations"],
+        "stats": stats,
         "publications": merged,
     }
 

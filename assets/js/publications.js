@@ -25,7 +25,8 @@
   let closeTimer = null;
 
   function escapeHtml(str) {
-    return String(str || '')
+    if (str === null || str === undefined) return '';
+    return String(str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -413,6 +414,89 @@
     });
   }
 
+  function renderPublicationStats(container, data) {
+    if (!container || !data) return;
+    const pubs = data.publications || [];
+    const s = data.stats || {};
+
+    const totalPubs = typeof s.total_publications === 'number' ? s.total_publications : pubs.length;
+    const totalCitations = typeof s.total_citations === 'number'
+      ? s.total_citations
+      : (typeof data.total_citations === 'number' ? data.total_citations : 0);
+    const hIndex = typeof s.h_index === 'number' ? s.h_index : 0;
+    const firstAuthor = typeof s.first_author_count === 'number' ? s.first_author_count : 0;
+    const equalFirst = typeof s.equal_first_author_count === 'number' ? s.equal_first_author_count : 0;
+    const uniqueCoauthors = typeof s.unique_coauthors === 'number' ? s.unique_coauthors : 0;
+    const byYear = Array.isArray(s.citations_by_year) ? s.citations_by_year : [];
+
+    const firstSub = equalFirst > 0 ? 'incl. ' + equalFirst + ' equal' : 'incl. equal';
+    const cards = [
+      { value: totalPubs, label: 'Publications', sub: 'listed', accent: '' },
+      { value: totalCitations, label: 'Citations', sub: 'OpenAlex', accent: 'accent-sky' },
+      { value: hIndex, label: 'h-index', sub: 'impact', accent: 'accent-gold' },
+      {
+        value: firstAuthor,
+        label: 'First-Author',
+        sub: firstSub,
+        accent: '',
+        title: 'Includes equal-contribution / shared first-author papers'
+      },
+      { value: uniqueCoauthors, label: 'Co-Authors', sub: 'collaborators', accent: 'accent-navy' }
+    ];
+
+    const cardsHtml = '<div class="pub-stats-cards">' + cards.map(function (c) {
+      const titleAttr = c.title ? ' title="' + escapeHtml(c.title) + '"' : '';
+      return (
+        '<div class="stat-card ' + escapeHtml(c.accent) + '"' + titleAttr + '>' +
+          '<span class="stat-value">' + escapeHtml(c.value) + '</span>' +
+          '<span class="stat-label">' + escapeHtml(c.label) + '</span>' +
+          '<span class="stat-sub">' + escapeHtml(c.sub) + '</span>' +
+        '</div>'
+      );
+    }).join('') + '</div>';
+
+    let chartHtml = '';
+    if (byYear.length > 0) {
+      const maxCount = Math.max(1, byYear.reduce(function (m, d) {
+        return Math.max(m, d.count || 0);
+      }, 0));
+      const minYear = byYear[0].year;
+      const maxYear = byYear[byYear.length - 1].year;
+      const rangeLabel = minYear === maxYear ? String(minYear) : minYear + '–' + maxYear;
+
+      const barsHtml = byYear.map(function (d) {
+        const count = Number(d.count || 0);
+        const pct = count === 0 ? '3px' : Math.max(12, Math.round((count / maxCount) * 100)) + '%';
+        const unit = count === 1 ? 'citation' : 'citations';
+        const ariaLabel = d.year + ': ' + count + ' ' + unit;
+        return (
+          '<div class="chart-col" tabindex="0" aria-label="' + escapeHtml(ariaLabel) + '">' +
+            '<div class="chart-bar-wrap">' +
+              '<div class="chart-bar-anchor" style="height: ' + pct + '">' +
+                '<span class="chart-tooltip" role="tooltip"><strong>' + escapeHtml(count) + '</strong> ' + unit + '</span>' +
+                '<div class="chart-bar' + (count === 0 ? ' is-zero' : '') + '"></div>' +
+              '</div>' +
+            '</div>' +
+            '<span class="chart-year">' + escapeHtml(d.year) + '</span>' +
+          '</div>'
+        );
+      }).join('');
+
+      chartHtml =
+        '<div class="pub-stats-chart-card">' +
+          '<div class="chart-card-header">' +
+            '<span class="chart-card-title">Citations / Year</span>' +
+            '<span class="chart-card-range">' + escapeHtml(rangeLabel) + '</span>' +
+          '</div>' +
+          '<div class="chart-bars" role="img" aria-label="Citations per year bar chart">' +
+            barsHtml +
+          '</div>' +
+        '</div>';
+    }
+
+    container.innerHTML = cardsHtml + chartHtml;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     const pinnedContainer = document.getElementById('pinned-publications');
     const allContainer = document.getElementById('all-publications');
@@ -470,10 +554,14 @@
     }
 
     if (allContainer) {
+      const statsContainer = document.getElementById('pub-stats');
       fetch('data/publications.json')
         .then(function (r) { return r.json(); })
         .then(function (data) {
           const allPubs = data.publications || [];
+          if (statsContainer) {
+            renderPublicationStats(statsContainer, data);
+          }
           if (syncStamp && data.updated_at) {
             const d = new Date(data.updated_at);
             const citesText = typeof data.total_citations === 'number' ? ' · ' + data.total_citations + ' citations' : '';

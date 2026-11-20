@@ -1496,11 +1496,252 @@ a.citing-title:hover svg {
   color: var(--text-secondary);
 }
 
+/* ==========================================================================
+   Publication Metrics Bar & Hoverable Citations-per-Year Chart
+   ========================================================================== */
+
+.pub-stats-panel {
+  margin-top: 1.65rem;
+  display: grid;
+  grid-template-columns: 1fr 270px;
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.pub-stats-cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--primary-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.9rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.stat-card.accent-gold {
+  border-top-color: var(--harmes-gold);
+}
+
+.stat-card.accent-sky {
+  border-top-color: var(--harmes-sky);
+}
+
+.stat-card.accent-navy {
+  border-top-color: var(--harmes-navy-light);
+}
+
+[data-theme="dark"] .stat-card.accent-navy {
+  border-top-color: #60a5fa;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.stat-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.pub-stats-chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--harmes-gold);
+  border-radius: var(--radius-md);
+  padding: 0.72rem 1rem 0.65rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.chart-card-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.chart-card-range {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.55rem;
+  height: 98px;
+  padding-top: 2.2rem;
+}
+
+.chart-col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.chart-bar-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar-anchor {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 34px;
+  height: 100%;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(180deg, var(--harmes-sky) 0%, var(--primary-color) 100%);
+  transition: transform 0.2s ease, background 0.2s ease, filter 0.2s ease;
+}
+
+.chart-bar.is-zero {
+  background: var(--border-strong);
+  opacity: 0.75;
+}
+
+.chart-col:hover .chart-bar,
+.chart-col:focus-visible .chart-bar {
+  background: linear-gradient(180deg, var(--harmes-gold-light) 0%, var(--harmes-gold) 100%);
+  opacity: 1;
+  transform: scaleY(1.04);
+  transform-origin: bottom;
+}
+
+.chart-year {
+  margin-top: 0.35rem;
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+
+.chart-col:hover .chart-year,
+.chart-col:focus-visible .chart-year {
+  color: var(--text-primary);
+}
+
+.chart-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 0.26rem 0.55rem;
+  border-radius: 6px;
+  background: var(--harmes-navy);
+  color: #ffffff;
+  font-size: 0.73rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: var(--shadow-md);
+  z-index: 20;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.chart-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--harmes-navy);
+}
+
+[data-theme="dark"] .chart-tooltip {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="dark"] .chart-tooltip::after {
+  border-top-color: #f8fafc;
+}
+
+.chart-col:hover .chart-tooltip,
+.chart-col:focus-visible .chart-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 880px) {
+  .pub-stats-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pub-stats-cards {
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .citations-modal-backdrop,
   .citations-modal-dialog,
   .pub-abstract-collapse,
-  .abstract-hint-btn svg {
+  .abstract-hint-btn svg,
+  .stat-card,
+  .chart-bar,
+  .chart-tooltip {
     transition: none;
   }
 }
