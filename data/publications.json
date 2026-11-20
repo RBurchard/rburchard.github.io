@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-11-20T12:25:57Z",
+  "updated_at": "2026-11-20T12:31:46Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
-  "total_citations": 62,
+  "total_citations": 59,
   "stats": {
     "total_publications": 14,
-    "total_citations": 62,
-    "h_index": 5,
+    "total_citations": 59,
+    "h_index": 4,
     "first_author_count": 7,
     "equal_first_author_count": 1,
     "unique_coauthors": 29,
@@ -400,7 +400,7 @@
         "W4407275516"
       ],
       "openalex_id": "https://openalex.org/W4407275516",
-      "cited_by_count": 7,
+      "cited_by_count": 6,
       "bibtex": "@incollection{burchard2025multi,\n  title = {Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection},\n  author = {Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_4},\n}",
       "abstract": "Hand washing is a crucial part of personal hygiene. Hand washing detection is a relevant topic for wearable sensing with applications in the medical and professional fields. Hand washing detection can be used to aid workers in complying with hygiene rules. Hand washing detection using body-worn IMU-based sensor systems has been shown to be a feasible approach, although, for some reported results, the specificity of the detection was low, leading to a high rate of false positives. In this work, we present a novel, open-source prototype device that additionally includes a humidity, temperature, and barometric sensor. We contribute a benchmark dataset of 10 participants and 43 hand-washing events and perform an evaluation of the sensors' benefits. Added to that, we outline the usefulness of the additional sensor in both the annotation pipeline and the machine learning models. By visual inspection, we show that especially the humidity sensor registers a strong increase in the relative humidity during a hand-washing activity. A machine learning analysis of our data shows that distinct features benefiting from such relative humidity patterns remain to be identified.",
       "citations": [
@@ -509,7 +509,7 @@
         "W4407275147"
       ],
       "openalex_id": "https://openalex.org/W4407275147",
-      "cited_by_count": 5,
+      "cited_by_count": 4,
       "bibtex": "@incollection{karande2025raising,\n  title = {Raising the Bar(Ometer): Identifying a User’s Stair and Lift Usage Through Wearable Sensor Data Analysis},\n  author = {Hrishikesh Balkrishna Karande and Ravikiran Arasur Thippeswamy Shivalingappa and Abdelhafid Nassim Yaici and Iman Haghbin and Niravkumar Bavadiya and Robin Burchard and Kristof Van Laerhoven},\n  year = {2025},\n  booktitle = {Lecture Notes in Computer Science (Springer)},\n  doi = {10.1007/978-3-031-80856-2_14},\n}",
       "abstract": "Many users are confronted multiple times daily with the choice of whether to take the stairs or the elevator. Whereas taking the stairs could be beneficial for cardiovascular health and wellness, taking the elevator might be more convenient but it also consumes energy. By precisely tracking and boosting users' stairs and elevator usage through their wearable, users might gain health insights and motivation, encouraging a healthy lifestyle and lowering the risk of sedentary-related health problems. This research describes a new exploratory dataset, to examine the patterns and behaviors related to using stairs and lifts. We collected data from 20 participants while climbing and descending stairs and taking a lift in a variety of scenarios. The aim is to provide insights and demonstrate the practicality of using wearable sensor data for such a scenario. Our collected dataset was used to train and test a Random Forest machine learning model, and the results show that our method is highly accurate at classifying stair and lift operations with an accuracy of 87.61% and a multi-class weighted F1-score of 87.56% over 8-second time windows. Furthermore, we investigate the effect of various types of sensors and data attributes on the model's performance. Our findings show that combining inertial and pressure sensors yields a viable solution for real-time activity detection.",
       "citations": [
@@ -1048,7 +1048,7 @@
       ],
       "abstract": "The automatic detection of hand washing has numerous applications in work and medical environments. Checking the compliance with hygiene standard in hospitals, or personal hygiene support are examples thereof. However, hand-washing can also become pathological and is a symptom of the obsessive-compulsive disorder (OCD) spectrum. Individuals suffering from OCD are compelled to wash their hands often to the extent of harming themselves. Automatically spotting compulsive hand-washing throughout the day can assist therapeutic interventions by augmenting the on-going monitoring of compulsions. Based on this the therapist can gauge the efficacy of the chosen interventions. We present WashSpot, a neural-network based method to spot (compulsive) hand-washing on commercially available Smartwatches using inertial motion sensor data.",
       "openalex_id": "https://openalex.org/W4366967150",
-      "cited_by_count": 13,
+      "cited_by_count": 12,
       "bibtex": "@inproceedings{burchard2023washspot,\n  title = {WashSpot: Real-Time Spotting and Detection of Enacted Compulsive Hand Washing with Wearable Devices},\n  author = {Robin Burchard and Philipp Scholl and Roselind Lieb and Kristof Van Laerhoven and Karina Wahl},\n  year = {2023},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3544793.3563428},\n}",
       "citations": [
         {

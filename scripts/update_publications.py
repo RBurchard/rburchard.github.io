@@ -800,7 +800,10 @@ def main():
                 work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), int(prev_work.get("cited_by_count") or 0))
 
         work["citations"] = dedup_citing
-        work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), len(dedup_citing))
+        if work_oa_ids and not had_error:
+            work["cited_by_count"] = len(dedup_citing)
+        else:
+            work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), len(dedup_citing))
 
     # Tag equal-contribution / shared first-author works from equal_first_author.json
     eq_dois = set()
