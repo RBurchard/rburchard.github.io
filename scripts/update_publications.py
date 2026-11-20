@@ -10,11 +10,13 @@ Writes static JSON to `data/publications.json` so the website loads with
 zero external tracking requests (100% GDPR compliant).
 """
 
+import html
 import json
 import os
 import re
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 ORCID_ID = "0000-0002-4130-5287"
@@ -48,6 +50,37 @@ def clean_text(text: str) -> str:
     text = text.replace("\u00a0", " ")
     text = re.sub(r"\s+", " ", text).strip()
     return text
+
+
+def clean_abstract(text: str) -> str:
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = html.unescape(text)
+    # Strip simple MathJax inline wrappers like \(82\%\) -> 82%
+    text = re.sub(r"\\\((.*?)\\\)", r"\1", text)
+    text = re.sub(r"\\([%&_#$])", r"\1", text)
+    text = clean_text(text)
+    text = re.sub(r"\(\s+", "(", text)
+    text = re.sub(r"\s+\)", ")", text)
+    text = re.sub(r"\s+([.,;:])", r"\1", text)
+    text = re.sub(r"^abstract\s*[:.]?\s*", "", text, flags=re.I)
+    return text
+
+
+def reconstruct_openalex_abstract(inverted_index) -> str:
+    if not isinstance(inverted_index, dict) or not inverted_index:
+        return ""
+    words = []
+    for word, positions in inverted_index.items():
+        if not isinstance(positions, list):
+            continue
+        for pos in positions:
+            words.append((pos, word))
+    if not words:
+        return ""
+    words.sort(key=lambda x: x[0])
+    return clean_abstract(" ".join(w for _, w in words))
 
 
 def normalize_doi(doi: str) -> str:
@@ -164,6 +197,7 @@ def fetch_openalex_works() -> list:
         cited_by_count = int(item.get("cited_by_count") or 0)
         raw_oa_id = item.get("id", "")
         short_id = short_openalex_id(raw_oa_id)
+        abstract = reconstruct_openalex_abstract(item.get("abstract_inverted_index"))
 
         works.append({
             "title": title,
@@ -174,8 +208,10 @@ def fetch_openalex_works() -> list:
             "doi": doi,
             "url": landing_url,
             "pdf_url": pdf_url,
+            "abstract": abstract,
             "cited_by_count": cited_by_count,
             "source": "openalex",
+            "raw_type": raw_type.lower(),
             "openalex_id": raw_oa_id,
             "openalex_ids": [short_id] if short_id else [],
         })
@@ -243,7 +279,7 @@ def fetch_orcid_works() -> list:
 
 def enrich_from_crossref(work: dict):
     doi = work.get("doi")
-    if not doi or (work.get("authors") and work.get("venue") and work.get("cited_by_count") is not None):
+    if not doi or (work.get("authors") and work.get("venue") and work.get("cited_by_count") is not None and work.get("abstract")):
         return
     try:
         url = f"https://api.crossref.org/works/{urllib.parse.quote(doi)}"
@@ -264,6 +300,8 @@ def enrich_from_crossref(work: dict):
                 work["venue"] = clean_text(containers[0])
         if work.get("cited_by_count") is None and "is-referenced-by-count" in data:
             work["cited_by_count"] = int(data.get("is-referenced-by-count") or 0)
+        if not work.get("abstract") and data.get("abstract"):
+            work["abstract"] = clean_abstract(data["abstract"])
     except Exception:
         pass
 
@@ -317,6 +355,18 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
             target["pdf_url"] = item["pdf_url"]
         if item.get("put_code"):
             target["put_code"] = item["put_code"]
+        item_abs = item.get("abstract") or ""
+        target_abs = target.get("abstract") or ""
+        item_is_dataset = item.get("raw_type") == "dataset" or "zenodo" in (item.get("venue") or "").lower()
+        target_is_dataset = target.get("raw_type") == "dataset" or "zenodo" in (target.get("venue") or "").lower()
+        if item_abs and (
+            not target_abs
+            or (target_is_dataset and not item_is_dataset)
+            or (not item_is_dataset and len(item_abs) > len(target_abs))
+        ):
+            target["abstract"] = item_abs
+            if not item_is_dataset and target_is_dataset:
+                target["raw_type"] = item.get("raw_type", "")
         if item.get("openalex_id") and not target.get("openalex_id"):
             target["openalex_id"] = item["openalex_id"]
         target_oa_ids = list(target.get("openalex_ids") or [])
@@ -370,6 +420,7 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
                 work["type"] = "preprint"
         if work.get("cited_by_count") is None:
             work["cited_by_count"] = 0
+        work.pop("raw_type", None)
         work["bibtex"] = generate_bibtex(work)
 
     # Sort by year descending, then title
@@ -380,7 +431,7 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
 def lookup_openalex_by_doi(doi: str):
     if not doi:
         return None
-    url = f"https://api.openalex.org/works/https://doi.org/{urllib.parse.quote(doi, safe='/')}?select=id,cited_by_count"
+    url = f"https://api.openalex.org/works/https://doi.org/{urllib.parse.quote(doi, safe='/')}?select=id,cited_by_count,abstract_inverted_index"
     try:
         data = fetch_json(url)
         raw_id = data.get("id") or ""
@@ -391,10 +442,78 @@ def lookup_openalex_by_doi(doi: str):
             "openalex_id": raw_id,
             "short_id": short_id,
             "cited_by_count": int(data.get("cited_by_count") or 0),
+            "abstract": reconstruct_openalex_abstract(data.get("abstract_inverted_index")),
         }
     except Exception as e:
         print(f"[WARN] OpenAlex DOI lookup failed for {doi}: {e}")
         return None
+
+
+def extract_arxiv_id(work: dict) -> str:
+    for field in (work.get("doi") or "", work.get("pdf_url") or "", work.get("url") or ""):
+        m = re.search(r"(?:arxiv[./:]|arxiv\.org/(?:abs|pdf)/)(\d{4}\.\d{4,5}(?:v\d+)?)", field, re.I)
+        if m:
+            return m.group(1)
+    return ""
+
+
+def fetch_arxiv_abstract(arxiv_id: str) -> str:
+    if not arxiv_id:
+        return ""
+    url = f"https://export.arxiv.org/api/query?id_list={urllib.parse.quote(arxiv_id)}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": HEADERS["User-Agent"]})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            xml_txt = resp.read().decode("utf-8", errors="replace")
+        root = ET.fromstring(xml_txt)
+        ns = {"a": "http://www.w3.org/2005/Atom"}
+        summary = root.find(".//a:entry/a:summary", ns)
+        if summary is not None and summary.text:
+            return clean_abstract(summary.text)
+    except Exception as e:
+        print(f"[WARN] arXiv abstract fetch failed for {arxiv_id}: {e}")
+    return ""
+
+
+def fetch_springer_abstract(doi: str) -> str:
+    if not doi or not doi.startswith("10.1007/"):
+        return ""
+    for kind in ("chapter", "article"):
+        url = f"https://link.springer.com/{kind}/{doi}"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": HEADERS["User-Agent"]})
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                page = resp.read().decode("utf-8", errors="replace")
+            m = re.search(r'<section[^>]*data-title="Abstract"[^>]*>.*?</section>', page, re.S | re.I)
+            if m:
+                section_html = re.sub(r"<h[1-6][^>]*>\s*Abstract\s*</h[1-6]>", "", m.group(0), flags=re.I)
+                abs_txt = clean_abstract(section_html)
+                if abs_txt:
+                    return abs_txt
+            m2 = re.search(r'<meta[^>]+name=["\']dc\.description["\'][^>]+content=["\']([^"\']+)["\']', page, re.I)
+            if m2:
+                abs_txt = clean_abstract(m2.group(1))
+                if abs_txt:
+                    return abs_txt
+        except Exception:
+            continue
+    return ""
+
+
+def enrich_abstract_fallbacks(work: dict):
+    if work.get("abstract"):
+        return
+    arxiv_id = extract_arxiv_id(work)
+    if arxiv_id:
+        abs_txt = fetch_arxiv_abstract(arxiv_id)
+        if abs_txt:
+            work["abstract"] = abs_txt
+            return
+    doi = work.get("doi") or ""
+    if doi.startswith("10.1007/"):
+        abs_txt = fetch_springer_abstract(doi)
+        if abs_txt:
+            work["abstract"] = abs_txt
 
 
 def fetch_citing_works_map(all_openalex_ids: list):
@@ -525,6 +644,20 @@ def main():
                 work["openalex_id"] = work.get("openalex_id") or found["openalex_id"]
                 work["openalex_ids"] = [found["short_id"]]
                 work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), found["cited_by_count"])
+                if found.get("abstract") and len(found["abstract"]) > len(work.get("abstract") or ""):
+                    work["abstract"] = found["abstract"]
+
+    # Enrich missing abstracts via arXiv / Springer Link and preserve previous if transient failure
+    for work in merged:
+        if not work.get("abstract"):
+            enrich_abstract_fallbacks(work)
+        if not work.get("abstract"):
+            work_doi = normalize_doi(work.get("doi", ""))
+            work_title_norm = normalize_title(work.get("title", ""))
+            prev_work = (prev_by_doi.get(work_doi) if work_doi else None) or prev_by_title.get(work_title_norm)
+            if prev_work and prev_work.get("abstract"):
+                work["abstract"] = prev_work["abstract"]
+        work["abstract"] = work.get("abstract") or ""
 
     # Batch-fetch citing papers from OpenAlex
     all_oa_ids = []
@@ -597,6 +730,7 @@ def main():
                         p["bibtex"] = m["bibtex"]
                     if m.get("openalex_id"):
                         p["openalex_id"] = m["openalex_id"]
+                    p["abstract"] = m.get("abstract") or p.get("abstract") or ""
                     p["cited_by_count"] = int(m.get("cited_by_count") or 0)
                     p["citations"] = m.get("citations", [])
                     if not p.get("links"):

@@ -16,7 +16,8 @@
     copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
     cite: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path></svg>',
     close: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
-    external: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
+    external: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>',
+    chevron: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'
   };
 
   const citationRegistry = new Map();
@@ -59,6 +60,42 @@
         ICONS.cite + ' <span>' + label + '</span>' +
       '</button>'
     );
+  }
+
+  function renderAbstractHint(abstractId) {
+    return (
+      '<button type="button" class="abstract-hint-btn" data-abstract-toggle aria-expanded="false" aria-controls="' + escapeHtml(abstractId) + '" title="Show abstract">' +
+        '<span class="abstract-hint-label">Abstract</span>' +
+        ICONS.chevron +
+      '</button>'
+    );
+  }
+
+  function renderAbstractSection(abstractText, abstractId) {
+    return (
+      '<div id="' + escapeHtml(abstractId) + '" class="pub-abstract-collapse" aria-hidden="true">' +
+        '<div class="pub-abstract-inner">' +
+          '<div class="pub-abstract-box">' +
+            '<span class="pub-abstract-label">Abstract</span>' +
+            '<p class="pub-abstract-text">' + escapeHtml(abstractText) + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function toggleCardAbstract(card) {
+    if (!card) return;
+    const expanded = card.classList.toggle('is-expanded');
+    const btn = card.querySelector('[data-abstract-toggle]');
+    if (btn) {
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      btn.setAttribute('title', expanded ? 'Hide abstract' : 'Show abstract');
+    }
+    const collapse = card.querySelector('.pub-abstract-collapse');
+    if (collapse) {
+      collapse.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+    }
   }
 
   function registerCitationEntry(citeKey, item) {
@@ -250,6 +287,8 @@
     const citeKey = 'pinned-' + index;
     registerCitationEntry(citeKey, item);
     const isFirst = index === 0;
+    const hasAbstract = Boolean(item.abstract && item.abstract.trim());
+    const absId = 'abs-pinned-' + index;
     const primaryUrl = (item.links && item.links[0] && item.links[0].url) || (item.doi ? 'https://doi.org/' + item.doi : '#');
     const iconHtml = item.icon
       ? '<img src="' + escapeHtml(item.icon) + '" alt="' + escapeHtml(item.title) + ' logo" class="pub-card-icon" loading="lazy">'
@@ -272,18 +311,20 @@
       : '';
 
     return (
-      '<article class="pub-card-pinned ' + (isFirst ? 'featured-first' : '') + '">' +
+      '<article class="pub-card-pinned ' + (isFirst ? 'featured-first' : '') + (hasAbstract ? ' pub-expandable' : '') + '">' +
         iconHtml +
         '<div class="pub-card-body">' +
           '<div class="pub-meta-top">' +
             '<span class="badge badge-pinned">' + ICONS.star + ' ' + escapeHtml(item.badge || 'Highlighted Publication') + '</span>' +
             '<span class="badge badge-year">' + escapeHtml(item.year) + '</span>' +
             formatCitationsBadge(item.cited_by_count, citeKey) +
+            (hasAbstract ? renderAbstractHint(absId) : '') +
           '</div>' +
           '<h3 class="pub-title"><a href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(item.title) + '</a></h3>' +
           '<p class="pub-authors">' + formatAuthors(item.authors) + '</p>' +
           (item.venue ? '<p class="pub-venue">' + escapeHtml(item.venue) + '</p>' : '') +
           (item.description ? '<p class="pub-desc">' + escapeHtml(item.description) + '</p>' : '') +
+          (hasAbstract ? renderAbstractSection(item.abstract, absId) : '') +
           '<div class="pub-links">' + linksHtml + bibBtn + '</div>' +
           bibDrawer +
         '</div>' +
@@ -294,6 +335,8 @@
   function renderChronologicalItem(item, index) {
     const citeKey = 'pub-' + index;
     registerCitationEntry(citeKey, item);
+    const hasAbstract = Boolean(item.abstract && item.abstract.trim());
+    const absId = 'abs-item-' + index;
     const primaryUrl = item.url || (item.doi ? 'https://doi.org/' + item.doi : '');
     const titleHtml = primaryUrl
       ? '<a href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(item.title) + '</a>'
@@ -324,15 +367,17 @@
     }
 
     return (
-      '<article class="pub-item" data-type="' + escapeHtml(item.type) + '">' +
+      '<article class="pub-item' + (hasAbstract ? ' pub-expandable' : '') + '" data-type="' + escapeHtml(item.type) + '">' +
         '<div class="pub-meta-top">' +
           '<span class="badge badge-year">' + escapeHtml(item.year) + '</span>' +
           '<span class="badge badge-type">' + escapeHtml(formatTypeLabel(item.type)) + '</span>' +
           formatCitationsBadge(item.cited_by_count, citeKey) +
+          (hasAbstract ? renderAbstractHint(absId) : '') +
         '</div>' +
         '<h4 class="pub-title">' + titleHtml + '</h4>' +
         '<p class="pub-authors">' + formatAuthors(item.authors) + '</p>' +
         (item.venue ? '<p class="pub-venue">' + escapeHtml(item.venue) + '</p>' : '') +
+        (hasAbstract ? renderAbstractSection(item.abstract, absId) : '') +
         '<div class="pub-links">' + actionBtns + '</div>' +
         (item.bibtex ? '<pre id="' + bibId + '" class="bibtex-drawer">' + escapeHtml(item.bibtex) + '</pre>' : '') +
       '</article>'
@@ -387,6 +432,19 @@
       const modal = document.getElementById('citations-modal');
       if (modal && !modal.hidden && e.target === modal) {
         closeCitationsModal();
+        return;
+      }
+      const absToggleBtn = e.target.closest('[data-abstract-toggle]');
+      if (absToggleBtn) {
+        toggleCardAbstract(absToggleBtn.closest('.pub-expandable'));
+        return;
+      }
+      const card = e.target.closest('.pub-expandable');
+      if (card) {
+        if (e.target.closest('a, button, .bibtex-drawer')) return;
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel && sel.trim().length > 0) return;
+        toggleCardAbstract(card);
       }
     });
 
@@ -433,7 +491,7 @@
                 if (activeFilter === 'preprint' && p.type !== 'preprint') return false;
               }
               if (searchQuery) {
-                const hay = [p.title, (p.authors || []).join(' '), p.venue, p.year].join(' ').toLowerCase();
+                const hay = [p.title, (p.authors || []).join(' '), p.venue, p.year, p.abstract || ''].join(' ').toLowerCase();
                 if (!hay.includes(searchQuery)) return false;
               }
               return true;

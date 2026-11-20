@@ -112,7 +112,8 @@
         "doi": "",
         "url": "https://research.birmingham.ac.uk/en/publications/1cff8467-2d8f-4a59-8706-9ce7e2dd2aa4"
       }
-    ]
+    ],
+    "abstract": "With each sensing modality exhibiting inherent strengths and limitations, multi-modal approaches for wearable Human Activity Recognition (HAR) are becoming increasingly relevant -- particularly for recognizing Activities of Daily Living (ADLs), where individual modalities often produce ambiguous signals for similar or complex activities. This work introduces HARMES, a multi-modal wearable dataset combining three wrist-recorded modalities: motion sensing via an Inertial Measurement Unit (IMU), atmospheric environmental sensors (humidity, temperature, and pressure), and audio. Collected from 20 participants performing household activities in their own homes, HARMES totals over 80 hours of recorded data, with approximately three hours of labeled activity data per participant across 15 ADL classes. To the best of our knowledge, HARMES is the first dataset to combine this particular sensor trio, and it is nearly six times larger than the previously largest wrist-inertial-acoustic HAR dataset. In an extensive benchmark, we evaluate cross-subject generalization and conduct an ablation study revealing that modality contributions are activity-dependent and can provide complementary value, particularly for activities that are ambiguous from motion data alone. HARMES is freely available at Zenodo, alongside example code for loading the dataset and training models on GitHub."
   },
   {
     "id": "handwashing-scidata-2026",
@@ -195,7 +196,8 @@
         "doi": "10.21203/rs.3.rs-10870927/v1",
         "url": "https://doi.org/10.21203/rs.3.rs-10870927/v1"
       }
-    ]
+    ],
+    "abstract": "Handwashing detection is a relevant research topic with applications in healthcare and professional environments. While usually related to hygiene improvement, handwashing detection could also be used to support individuals with obsessive-compulsive disorder (OCD). For these individuals, compulsive, long, and frequent handwashing has a negative impact. An automated system could spot compulsive handwashing in real-time and augment the therapy process. No activity recognition datasets containing in-the-wild-recorded compulsive handwashing are available. With this work, we present the OCDetect Dataset, the first dataset with unscripted, compulsive handwashing. It contains recordings from inertial measurement units (IMUs) of 22 participants over 28 days, with 3000 recorded hand washes. For each hand wash, we supply its user-annotated kind (compulsive / routine). We provide an overview of related datasets and describe the recording, cleaning, labeling, and final features of our dataset. We reach a maximum F1 score of 0.77 (avg.: 0.33, chance level: 0.03) when spotting handwashing from all background activities on unseen participants. Our dataset and code for the reproduction of our results are publicly available."
   },
   {
     "id": "atmospheric-sensing-2026",
@@ -250,6 +252,7 @@
         "doi": "10.48550/arxiv.2605.02596",
         "url": "https://arxiv.org/abs/2605.02596"
       }
-    ]
+    ],
+    "abstract": "Previous work in the area of hand washing detection has hinted at the usefulness of atmospheric sensors for hand washing detection. Specifically, a humidity sensor can be used to measure nearby tap water flow using wearable devices. For this work, we expand on previous findings and a pre-existing dataset by recording 10 additional participants with a self-made open-source prototype recording device. We introduce an updated dataset with 20 participants instead of 10 participants, for which we make available IMU, humidity, temperature, and pressure measurements. The newly recorded participants conducted more complex background activities, which increased our dataset’s real-world relevance. Additionally, we show how to train an optimized deep-learning-based classifier on different parts of the combined dataset, improving on the previous study’s results, achieving significantly better F1 scores (82% instead of 70%) on the pre-existing dataset. Furthermore, by leveraging a BIO-BANK semi-supervised pretrained model, we show that, unlike in previous work, the addition of humidity sensors to IMU data has a positive impact on the classification performance on the old and the new dataset, improving the F1-score on the combined dataset from 60% to 68%. All code and data are publicly available on GitHub."
   }
 ]

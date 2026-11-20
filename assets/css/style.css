@@ -1379,9 +1379,128 @@ a.citing-title:hover svg {
   }
 }
 
+/* ==========================================================================
+   Expandable Publication Cards & Abstract Accordion
+   ========================================================================== */
+
+.pub-expandable {
+  cursor: pointer;
+}
+
+.pub-expandable .bibtex-drawer {
+  cursor: text;
+}
+
+.pub-item.pub-expandable.is-expanded {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+}
+
+.pub-card-pinned.pub-expandable.is-expanded {
+  border-color: var(--harmes-gold);
+  box-shadow: var(--shadow-lg);
+}
+
+.abstract-hint-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pub-expandable:hover .abstract-hint-btn,
+.pub-expandable.is-expanded .abstract-hint-btn,
+.abstract-hint-btn:hover {
+  color: var(--primary-color);
+  background: var(--primary-soft);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.abstract-hint-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.abstract-hint-btn svg {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pub-expandable.is-expanded .abstract-hint-btn svg {
+  transform: rotate(180deg);
+}
+
+.pub-abstract-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: grid-template-rows 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s ease,
+              margin 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pub-expandable.is-expanded .pub-abstract-collapse {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 0.75rem;
+  margin-bottom: 0.95rem;
+}
+
+.pub-abstract-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pub-abstract-box {
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--primary-color);
+  cursor: text;
+}
+
+.pub-card-pinned .pub-abstract-box {
+  border-left-color: var(--harmes-gold);
+  background: var(--bg-card);
+}
+
+.pub-abstract-label {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-color);
+  margin-bottom: 0.35rem;
+}
+
+.pub-card-pinned .pub-abstract-label {
+  color: var(--accent-gold);
+}
+
+.pub-abstract-text {
+  font-size: 0.91rem;
+  line-height: 1.68;
+  color: var(--text-secondary);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .citations-modal-backdrop,
-  .citations-modal-dialog {
+  .citations-modal-dialog,
+  .pub-abstract-collapse,
+  .abstract-hint-btn svg {
     transition: none;
   }
 }
