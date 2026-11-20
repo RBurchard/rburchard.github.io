@@ -14,8 +14,14 @@
     bibtex: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
     star: '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
     copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
-    cite: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path></svg>'
+    cite: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path></svg>',
+    close: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
+    external: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
   };
+
+  const citationRegistry = new Map();
+  let lastFocusedEl = null;
+  let closeTimer = null;
 
   function escapeHtml(str) {
     return String(str || '')
@@ -45,13 +51,204 @@
     }
   }
 
-  function formatCitationsBadge(count) {
+  function formatCitationsBadge(count, citeKey) {
     if (typeof count !== 'number' || isNaN(count)) return '';
     const label = count === 1 ? '1 Citation' : count + ' Citations';
-    return '<span class="badge badge-citations" title="Citation count from OpenAlex / CrossRef">' + ICONS.cite + ' ' + label + '</span>';
+    return (
+      '<button type="button" class="badge badge-citations badge-citations-btn" data-citations-open="' + escapeHtml(citeKey) + '" aria-haspopup="dialog" title="Click to view citing papers">' +
+        ICONS.cite + ' <span>' + label + '</span>' +
+      '</button>'
+    );
+  }
+
+  function registerCitationEntry(citeKey, item) {
+    citationRegistry.set(citeKey, {
+      title: item.title || '',
+      year: item.year || '',
+      doi: item.doi || '',
+      url: item.url || '',
+      openalex_id: item.openalex_id || '',
+      cited_by_count: typeof item.cited_by_count === 'number' ? item.cited_by_count : 0,
+      citations: Array.isArray(item.citations) ? item.citations : []
+    });
+  }
+
+  function formatCitingAuthors(authors) {
+    if (!authors || !authors.length) return '';
+    const formatOne = function (a) {
+      const clean = escapeHtml(a);
+      return a.toLowerCase().includes('burchard') ? '<span class="author-self">' + clean + '</span>' : clean;
+    };
+    if (authors.length <= 8) {
+      return authors.map(formatOne).join(', ');
+    }
+    const head = authors.slice(0, 6).map(formatOne);
+    const tail = formatOne(authors[authors.length - 1]);
+    return head.join(', ') + ', &hellip;, ' + tail;
+  }
+
+  function ensureCitationsModal() {
+    let modal = document.getElementById('citations-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'citations-modal';
+    modal.className = 'citations-modal-backdrop';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'citations-modal-title');
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="citations-modal-dialog" role="document">' +
+        '<div class="citations-modal-header">' +
+          '<div class="citations-modal-heading">' +
+            '<div class="citations-modal-kicker">' +
+              '<span id="citations-modal-count" class="badge badge-citations"></span>' +
+              '<span class="citations-modal-eyebrow">Papers citing</span>' +
+            '</div>' +
+            '<h3 id="citations-modal-title" class="citations-modal-title"></h3>' +
+          '</div>' +
+          '<button type="button" class="citations-modal-close" aria-label="Close citations popup" title="Close (Esc)">' +
+            ICONS.close +
+          '</button>' +
+        '</div>' +
+        '<div id="citations-modal-body" class="citations-modal-body"></div>' +
+        '<div id="citations-modal-footer" class="citations-modal-footer"></div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openCitationsModal(citeKey, triggerEl) {
+    const entry = citationRegistry.get(citeKey);
+    if (!entry) return;
+
+    const modal = ensureCitationsModal();
+    if (closeTimer) {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+
+    lastFocusedEl = triggerEl || document.activeElement;
+
+    const countEl = document.getElementById('citations-modal-count');
+    const titleEl = document.getElementById('citations-modal-title');
+    const bodyEl = document.getElementById('citations-modal-body');
+    const footerEl = document.getElementById('citations-modal-footer');
+
+    const citations = entry.citations || [];
+    const total = Math.max(entry.cited_by_count || 0, citations.length);
+
+    if (countEl) {
+      let countLabel;
+      if (citations.length > 0 && total > citations.length) {
+        countLabel = citations.length + ' Indexed Citing Papers (' + total + ' total)';
+      } else {
+        countLabel = total === 1 ? '1 Citing Paper' : total + ' Citing Papers';
+      }
+      countEl.innerHTML = ICONS.cite + ' <span>' + escapeHtml(countLabel) + '</span>';
+    }
+
+    if (titleEl) {
+      titleEl.textContent = entry.title;
+    }
+
+    if (bodyEl) {
+      if (citations.length > 0) {
+        bodyEl.innerHTML = '<ul class="citing-list">' + citations.map(function (c) {
+          const linkUrl = (c.url && /^https?:\/\//i.test(c.url)) ? c.url : (c.doi ? 'https://doi.org/' + c.doi : '');
+          const titleNode = linkUrl
+            ? '<a href="' + escapeHtml(linkUrl) + '" target="_blank" rel="noopener noreferrer" class="citing-title"><span>' + escapeHtml(c.title) + '</span>' + ICONS.external + '</a>'
+            : '<span class="citing-title">' + escapeHtml(c.title) + '</span>';
+          const authorsHtml = formatCitingAuthors(c.authors);
+          const yearHtml = c.year ? '<span class="badge badge-year">' + escapeHtml(c.year) + '</span>' : '';
+          const venueHtml = c.venue ? '<span class="citing-venue">' + escapeHtml(c.venue) + '</span>' : '';
+          const doiUrl = c.doi ? 'https://doi.org/' + c.doi : '';
+          const doiLinkHtml = (c.doi && doiUrl !== linkUrl)
+            ? '<a href="' + escapeHtml(doiUrl) + '" target="_blank" rel="noopener noreferrer" class="citing-doi-link">DOI</a>'
+            : '';
+
+          return (
+            '<li class="citing-item">' +
+              titleNode +
+              (authorsHtml ? '<p class="citing-authors">' + authorsHtml + '</p>' : '') +
+              '<div class="citing-meta">' + yearHtml + venueHtml + doiLinkHtml + '</div>' +
+            '</li>'
+          );
+        }).join('') + '</ul>';
+      } else {
+        bodyEl.innerHTML =
+          '<div class="citing-empty">' +
+            '<p>No citing papers are currently indexed in OpenAlex for this publication.</p>' +
+            '<p class="citing-empty-hint">You can still check Google Scholar below for recent or non-indexed citations.</p>' +
+          '</div>';
+      }
+      bodyEl.scrollTop = 0;
+    }
+
+    if (footerEl) {
+      const scholarUrl = 'https://scholar.google.com/scholar?q=' + encodeURIComponent('"' + entry.title + '"');
+      let actionsHtml = '';
+      if (entry.openalex_id && /^https?:\/\//i.test(entry.openalex_id)) {
+        actionsHtml += '<a href="' + escapeHtml(entry.openalex_id) + '" class="btn btn-sm" target="_blank" rel="noopener noreferrer"><span>OpenAlex</span>' + ICONS.external + '</a>';
+      }
+      actionsHtml += '<a href="' + escapeHtml(scholarUrl) + '" class="btn btn-sm" target="_blank" rel="noopener noreferrer"><span>Google Scholar</span>' + ICONS.external + '</a>';
+
+      footerEl.innerHTML =
+        '<span class="citations-modal-source">Synced locally from OpenAlex</span>' +
+        '<div class="citations-modal-actions">' + actionsHtml + '</div>';
+    }
+
+    modal.hidden = false;
+    document.body.classList.add('modal-open');
+    if (bodyEl) {
+      bodyEl.scrollTop = 0;
+    }
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      modal.classList.add('open');
+    } else {
+      requestAnimationFrame(function () {
+        modal.classList.add('open');
+        if (bodyEl) {
+          bodyEl.scrollTop = 0;
+        }
+      });
+    }
+
+    const closeBtn = modal.querySelector('.citations-modal-close');
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  function closeCitationsModal() {
+    const modal = document.getElementById('citations-modal');
+    if (!modal || modal.hidden) return;
+
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+
+    const finishClose = function () {
+      modal.hidden = true;
+      closeTimer = null;
+      if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
+        lastFocusedEl.focus();
+      }
+      lastFocusedEl = null;
+    };
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishClose();
+    } else {
+      closeTimer = setTimeout(finishClose, 180);
+    }
   }
 
   function renderPinnedCard(item, index) {
+    const citeKey = 'pinned-' + index;
+    registerCitationEntry(citeKey, item);
     const isFirst = index === 0;
     const primaryUrl = (item.links && item.links[0] && item.links[0].url) || (item.doi ? 'https://doi.org/' + item.doi : '#');
     const iconHtml = item.icon
@@ -81,7 +278,7 @@
           '<div class="pub-meta-top">' +
             '<span class="badge badge-pinned">' + ICONS.star + ' ' + escapeHtml(item.badge || 'Highlighted Publication') + '</span>' +
             '<span class="badge badge-year">' + escapeHtml(item.year) + '</span>' +
-            formatCitationsBadge(item.cited_by_count) +
+            formatCitationsBadge(item.cited_by_count, citeKey) +
           '</div>' +
           '<h3 class="pub-title"><a href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(item.title) + '</a></h3>' +
           '<p class="pub-authors">' + formatAuthors(item.authors) + '</p>' +
@@ -95,6 +292,8 @@
   }
 
   function renderChronologicalItem(item, index) {
+    const citeKey = 'pub-' + index;
+    registerCitationEntry(citeKey, item);
     const primaryUrl = item.url || (item.doi ? 'https://doi.org/' + item.doi : '');
     const titleHtml = primaryUrl
       ? '<a href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(item.title) + '</a>'
@@ -129,7 +328,7 @@
         '<div class="pub-meta-top">' +
           '<span class="badge badge-year">' + escapeHtml(item.year) + '</span>' +
           '<span class="badge badge-type">' + escapeHtml(formatTypeLabel(item.type)) + '</span>' +
-          formatCitationsBadge(item.cited_by_count) +
+          formatCitationsBadge(item.cited_by_count, citeKey) +
         '</div>' +
         '<h4 class="pub-title">' + titleHtml + '</h4>' +
         '<p class="pub-authors">' + formatAuthors(item.authors) + '</p>' +
@@ -173,6 +372,32 @@
     const pinnedContainer = document.getElementById('pinned-publications');
     const allContainer = document.getElementById('all-publications');
     const syncStamp = document.getElementById('pub-sync-timestamp');
+
+    document.addEventListener('click', function (e) {
+      const openBtn = e.target.closest('[data-citations-open]');
+      if (openBtn) {
+        openCitationsModal(openBtn.getAttribute('data-citations-open'), openBtn);
+        return;
+      }
+      const closeBtn = e.target.closest('.citations-modal-close');
+      if (closeBtn) {
+        closeCitationsModal();
+        return;
+      }
+      const modal = document.getElementById('citations-modal');
+      if (modal && !modal.hidden && e.target === modal) {
+        closeCitationsModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('citations-modal');
+        if (modal && !modal.hidden) {
+          closeCitationsModal();
+        }
+      }
+    });
 
     if (pinnedContainer) {
       fetch('data/pinned.json')

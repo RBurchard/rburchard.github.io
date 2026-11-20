@@ -46,7 +46,73 @@
     ],
     "bibtex": "@article{burchard2026harmes,\n  title={HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound},\n  author={Burchard, Robin and Br{\\\"u}ckner, Pascal-Andr{\\'e} and Bock, Marius and Gall, J{\\\"u}rgen and Van Laerhoven, Kristof},\n  journal={arXiv preprint arXiv:2605.02596},\n  year={2026},\n  url={https://arxiv.org/abs/2605.02596}\n}",
     "doi": "10.48550/arxiv.2605.02596",
-    "cited_by_count": 4
+    "cited_by_count": 5,
+    "openalex_id": "https://openalex.org/W7160246476",
+    "citations": [
+      {
+        "title": "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset",
+        "authors": [
+          "Ahmed Mohamady",
+          "Robin Burchard",
+          "Kristof Van Laerhoven"
+        ],
+        "year": 2026,
+        "venue": "arXiv Preprint",
+        "doi": "10.48550/arxiv.2606.27886",
+        "url": "https://arxiv.org/abs/2606.27886"
+      },
+      {
+        "title": "COREF: source-only selective decision fusion for wearable activity recognition",
+        "authors": [
+          "Mohamed Aktham Ahmed",
+          "Moceheb Lazam Shuwandy"
+        ],
+        "year": 2026,
+        "venue": "Zenodo",
+        "doi": "10.5281/zenodo.22017363",
+        "url": "https://doi.org/10.5281/zenodo.22017363"
+      },
+      {
+        "title": "SmartADAPT-Net: Decision-Level Adaptation for Free-Living Smartwatch-Based Activities of Daily Living Recognition",
+        "authors": [
+          "Mustafa Elhadi Ahmed",
+          "Hongnian Yu",
+          "Michael Vassallo",
+          "Pelagia Koufaki"
+        ],
+        "year": 2026,
+        "venue": "Research Square",
+        "doi": "10.21203/rs.3.rs-10870927/v1",
+        "url": "https://doi.org/10.21203/rs.3.rs-10870927/v1"
+      },
+      {
+        "title": "StrengthSense: A Dataset of IMU Signals Capturing Everyday Activities with Diverse Physical Demands",
+        "authors": [
+          "Zeyu Yang",
+          "Zhuchenyang Liu",
+          "Yao Zhang",
+          "Clayton Frederick Souza Leite",
+          "Yu Xiao"
+        ],
+        "year": 2026,
+        "venue": "ACM International Symposium on Wearable Computers (ISWC)",
+        "doi": "10.1145/3830727.3834811",
+        "url": "https://doi.org/10.1145/3830727.3834811"
+      },
+      {
+        "title": "WISP: Composable Representations for Wrist-Worn Activity Recognition",
+        "authors": [
+          "Zipeng Wu",
+          "Shiqiao Zhou",
+          "Fabian Spill",
+          "James Andrews"
+        ],
+        "year": 2026,
+        "venue": "University of Birmingham Research Portal (University of Birmingham)",
+        "doi": "",
+        "url": "https://research.birmingham.ac.uk/en/publications/1cff8467-2d8f-4a59-8706-9ce7e2dd2aa4"
+      }
+    ]
   },
   {
     "id": "handwashing-scidata-2026",
@@ -82,7 +148,54 @@
     ],
     "doi": "10.1038/s41597-026-06698-2",
     "bibtex": "@article{burchard2026real,\n  title = {A Real-World Dataset for detecting Handwashing in daily Life using Wrist Motion Data from Wearables},\n  author = {Robin Burchard and Kristina Kirsten and Marcel Miché and Philipp Scholl and Bert Arnrich and Kristof Van Laerhoven and Roselind Lieb and Karina Wahl},\n  year = {2026},\n  journal = {Scientific Data},\n  doi = {10.1038/s41597-026-06698-2},\n}",
-    "cited_by_count": 3
+    "cited_by_count": 3,
+    "openalex_id": "https://openalex.org/W7128049743",
+    "citations": [
+      {
+        "title": "Artificial Intelligence and OCD: Interactions in Symptoms, Diagnosis, Treatment, and Ethical Considerations",
+        "authors": [
+          "Adam Charles Frank",
+          "Emma Garland",
+          "Ruibei Li",
+          "Jiaqi Fan",
+          "Benjamin Lederman",
+          "Michelle M. Dexter",
+          "Bradley S. Peterson",
+          "Barbara L. Van Noppen",
+          "Shirkanth Narayanan"
+        ],
+        "year": 2026,
+        "venue": "Current Developmental Disorders Reports",
+        "doi": "10.1007/s40474-026-00367-0",
+        "url": "https://doi.org/10.1007/s40474-026-00367-0"
+      },
+      {
+        "title": "IMU-Bench: Benchmarking Wrist IMU Representations Across Kinematic, Semantic and Clinical Tasks",
+        "authors": [
+          "Yiquan Li",
+          "Aidan Bradshaw",
+          "Chenfeng Gao",
+          "Karan Ahuja"
+        ],
+        "year": 2026,
+        "venue": "arXiv Preprint",
+        "doi": "10.48550/arxiv.2610.19481",
+        "url": "https://arxiv.org/abs/2610.19481"
+      },
+      {
+        "title": "SmartADAPT-Net: Decision-Level Adaptation for Free-Living Smartwatch-Based Activities of Daily Living Recognition",
+        "authors": [
+          "Mustafa Elhadi Ahmed",
+          "Hongnian Yu",
+          "Michael Vassallo",
+          "Pelagia Koufaki"
+        ],
+        "year": 2026,
+        "venue": "Research Square",
+        "doi": "10.21203/rs.3.rs-10870927/v1",
+        "url": "https://doi.org/10.21203/rs.3.rs-10870927/v1"
+      }
+    ]
   },
   {
     "id": "atmospheric-sensing-2026",
@@ -108,6 +221,35 @@
     ],
     "doi": "10.1007/978-3-032-13312-0_18",
     "bibtex": "@incollection{burchard2026improved,\n  title = {Improved Strategies for Multi-modal Atmospheric Sensing to Augment Wearable IMU-Based Hand Washing Detection},\n  author = {Robin Burchard and Hurriat Ali and Kristof Van Laerhoven},\n  year = {2026},\n  booktitle = {Lecture notes in computer science},\n  doi = {10.1007/978-3-032-13312-0_18},\n}",
-    "cited_by_count": 2
+    "cited_by_count": 2,
+    "openalex_id": "https://openalex.org/W7118013844",
+    "citations": [
+      {
+        "title": "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset",
+        "authors": [
+          "Ahmed Mohamady",
+          "Robin Burchard",
+          "Kristof Van Laerhoven"
+        ],
+        "year": 2026,
+        "venue": "arXiv Preprint",
+        "doi": "10.48550/arxiv.2606.27886",
+        "url": "https://arxiv.org/abs/2606.27886"
+      },
+      {
+        "title": "HARMES: A Multi-Modal Dataset for Wearable Human Activity Recognition with Motion, Environmental Sensing and Sound",
+        "authors": [
+          "Robin Burchard",
+          "Pascal-André Brückner",
+          "Marius Bock",
+          "Jürgen Gall",
+          "Kristof Van Laerhoven"
+        ],
+        "year": 2026,
+        "venue": "arXiv Preprint",
+        "doi": "10.48550/arxiv.2605.02596",
+        "url": "https://arxiv.org/abs/2605.02596"
+      }
+    ]
   }
 ]

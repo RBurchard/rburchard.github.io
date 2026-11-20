@@ -709,6 +709,29 @@ main {
   border-color: rgba(56, 189, 248, 0.35);
 }
 
+.badge-citations-btn {
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.badge-citations-btn:hover {
+  background: rgba(14, 165, 233, 0.16);
+  border-color: var(--harmes-sky);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .badge-citations-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+}
+
+.badge-citations-btn:focus-visible {
+  outline: 2px solid var(--harmes-sky);
+  outline-offset: 2px;
+}
+
 .pub-title {
   font-size: 1.18rem;
   font-weight: 700;
@@ -1096,4 +1119,269 @@ main {
   height: 8px;
   border-radius: 50%;
   background: #10b981;
+}
+
+/* ==========================================================================
+   Citations Popup Modal
+   ========================================================================== */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.citations-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(9, 21, 36, 0.62);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.citations-modal-backdrop[hidden] {
+  display: none;
+}
+
+.citations-modal-backdrop.open {
+  opacity: 1;
+}
+
+.citations-modal-dialog {
+  width: 100%;
+  max-width: 660px;
+  max-height: min(82vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-strong);
+  border-top: 4px solid var(--harmes-gold);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.citations-modal-backdrop.open .citations-modal-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.citations-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.citations-modal-heading {
+  min-width: 0;
+  flex: 1;
+}
+
+.citations-modal-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.citations-modal-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.citations-modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.citations-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.citations-modal-close:hover {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold-border);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.citations-modal-close:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.citations-modal-body {
+  overflow-y: auto;
+  padding: 1.15rem 1.35rem;
+  flex: 1;
+}
+
+.citing-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.citing-item {
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  transition: var(--transition);
+}
+
+.citing-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.citing-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.96rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+a.citing-title:hover {
+  color: var(--primary-color);
+}
+
+.citing-title svg {
+  flex-shrink: 0;
+  transform: translateY(1px);
+  color: var(--text-muted);
+}
+
+a.citing-title:hover svg {
+  color: var(--primary-color);
+}
+
+.citing-authors {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin-top: 0.32rem;
+}
+
+.citing-authors .author-self {
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--harmes-gold);
+  text-underline-offset: 2px;
+}
+
+.citing-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.citing-venue {
+  font-size: 0.83rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.citing-doi-link {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--primary-color);
+}
+
+.citing-doi-link:hover {
+  border-color: var(--primary-color);
+}
+
+.citing-empty {
+  text-align: center;
+  padding: 1.75rem 1rem;
+  color: var(--text-secondary);
+  font-size: 0.94rem;
+}
+
+.citing-empty-hint {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.citations-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.35rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.citations-modal-source {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.citations-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .citations-modal-backdrop {
+    padding: 0.75rem;
+  }
+  .citations-modal-dialog {
+    max-height: 88vh;
+  }
+  .citations-modal-header,
+  .citations-modal-body,
+  .citations-modal-footer {
+    padding: 0.95rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .citations-modal-backdrop,
+  .citations-modal-dialog {
+    transition: none;
+  }
 }

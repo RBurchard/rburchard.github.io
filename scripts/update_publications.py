@@ -60,6 +60,29 @@ def normalize_doi(doi: str) -> str:
     return doi.strip()
 
 
+def short_openalex_id(raw_id: str) -> str:
+    if not raw_id:
+        return ""
+    seg = raw_id.strip().rstrip("/").rsplit("/", 1)[-1].upper()
+    return seg if re.match(r"^W\d+$", seg) else ""
+
+
+def clean_venue(venue: str) -> str:
+    v = clean_text(venue or "")
+    if not v:
+        return ""
+    v_low = v.lower()
+    if "lecture notes in computer science including subseries" in v_low or v_low == "lecture notes in computer science":
+        return "Lecture Notes in Computer Science (Springer)"
+    if "ubicomp iswc 2022 adjunct proceedings" in v_low:
+        return "ACM UbiComp / ISWC 2022 Adjunct Proceedings"
+    if "arxiv" in v_low:
+        return "arXiv Preprint"
+    if v == "Zenodo (CERN European Organization for Nuclear Research)":
+        return "Zenodo"
+    return v
+
+
 def make_bibtex_key(authors: list, year, title: str) -> str:
     first_author = "burchard"
     if authors:
@@ -139,6 +162,8 @@ def fetch_openalex_works() -> list:
         landing_url = loc.get("landing_page_url") or (f"https://doi.org/{doi}" if doi else "")
         pdf_url = loc.get("pdf_url") or ((item.get("open_access") or {}).get("oa_url") or "")
         cited_by_count = int(item.get("cited_by_count") or 0)
+        raw_oa_id = item.get("id", "")
+        short_id = short_openalex_id(raw_oa_id)
 
         works.append({
             "title": title,
@@ -151,7 +176,8 @@ def fetch_openalex_works() -> list:
             "pdf_url": pdf_url,
             "cited_by_count": cited_by_count,
             "source": "openalex",
-            "openalex_id": item.get("id", ""),
+            "openalex_id": raw_oa_id,
+            "openalex_ids": [short_id] if short_id else [],
         })
     return works
 
@@ -262,7 +288,17 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
         if not existing_key:
             key = doi or title_norm
             if key:
-                merged_by_key[key] = dict(item)
+                cloned = dict(item)
+                oa_ids = []
+                for oid in (cloned.get("openalex_ids") or []):
+                    sid = short_openalex_id(oid)
+                    if sid and sid not in oa_ids:
+                        oa_ids.append(sid)
+                sid_single = short_openalex_id(cloned.get("openalex_id", ""))
+                if sid_single and sid_single not in oa_ids:
+                    oa_ids.append(sid_single)
+                cloned["openalex_ids"] = oa_ids
+                merged_by_key[key] = cloned
             return
 
         target = merged_by_key[existing_key]
@@ -281,6 +317,15 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
             target["pdf_url"] = item["pdf_url"]
         if item.get("put_code"):
             target["put_code"] = item["put_code"]
+        if item.get("openalex_id") and not target.get("openalex_id"):
+            target["openalex_id"] = item["openalex_id"]
+        target_oa_ids = list(target.get("openalex_ids") or [])
+        for oid in list(item.get("openalex_ids") or []) + [item.get("openalex_id", "")]:
+            sid = short_openalex_id(oid)
+            if sid and sid not in target_oa_ids:
+                target_oa_ids.append(sid)
+        if target_oa_ids:
+            target["openalex_ids"] = target_oa_ids
         if item.get("cited_by_count") is not None:
             target["cited_by_count"] = max(int(target.get("cited_by_count") or 0), int(item.get("cited_by_count") or 0))
         if item.get("type") and target.get("type") == "preprint" and item["type"] != "preprint":
@@ -319,12 +364,9 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
         work["authors"] = [a.replace("Jüergen Gall", "Jürgen Gall") for a in work["authors"]]
         # Clean up venue capitalization and verbose strings
         if work.get("venue"):
-            if "Lecture Notes in Computer Science Including Subseries" in work["venue"] or work["venue"].lower() == "lecture notes in computer science":
-                work["venue"] = "Lecture Notes in Computer Science (Springer)"
-            elif "Ubicomp Iswc 2022 Adjunct Proceedings" in work["venue"]:
-                work["venue"] = "ACM UbiComp / ISWC 2022 Adjunct Proceedings"
-            elif "arxiv" in work["venue"].lower():
-                work["venue"] = "arXiv Preprint"
+            cleaned_v = clean_venue(work["venue"])
+            work["venue"] = cleaned_v
+            if cleaned_v == "arXiv Preprint":
                 work["type"] = "preprint"
         if work.get("cited_by_count") is None:
             work["cited_by_count"] = 0
@@ -335,7 +377,131 @@ def merge_publications(orcid_works: list, openalex_works: list, pinned_list: lis
     return results
 
 
+def lookup_openalex_by_doi(doi: str):
+    if not doi:
+        return None
+    url = f"https://api.openalex.org/works/https://doi.org/{urllib.parse.quote(doi, safe='/')}?select=id,cited_by_count"
+    try:
+        data = fetch_json(url)
+        raw_id = data.get("id") or ""
+        short_id = short_openalex_id(raw_id)
+        if not short_id:
+            return None
+        return {
+            "openalex_id": raw_id,
+            "short_id": short_id,
+            "cited_by_count": int(data.get("cited_by_count") or 0),
+        }
+    except Exception as e:
+        print(f"[WARN] OpenAlex DOI lookup failed for {doi}: {e}")
+        return None
+
+
+def fetch_citing_works_map(all_openalex_ids: list):
+    unique_ids = []
+    seen = set()
+    for raw in all_openalex_ids:
+        sid = short_openalex_id(raw)
+        if sid and sid not in seen:
+            seen.add(sid)
+            unique_ids.append(sid)
+
+    citations_by_target = {sid: [] for sid in unique_ids}
+    had_error = False
+    chunk_size = 40
+
+    for i in range(0, len(unique_ids), chunk_size):
+        chunk = unique_ids[i:i + chunk_size]
+        chunk_set = set(chunk)
+        cursor = "*"
+        pages = 0
+        while cursor and pages < 10:
+            pages += 1
+            url = (
+                f"https://api.openalex.org/works?filter=cites:{'|'.join(chunk)}"
+                "&select=id,doi,title,publication_year,authorships,primary_location,open_access,referenced_works"
+                "&per-page=200&sort=publication_year:desc"
+                f"&cursor={urllib.parse.quote(cursor, safe='')}"
+            )
+            try:
+                data = fetch_json(url)
+            except Exception as e:
+                print(f"[WARN] OpenAlex citing works fetch failed for chunk {i // chunk_size + 1}: {e}")
+                had_error = True
+                break
+
+            results = data.get("results") or []
+            if not results:
+                break
+
+            for r in results:
+                cid = short_openalex_id(r.get("id") or "")
+                title = clean_text(r.get("title") or "")
+                if not title:
+                    continue
+                year = int(r.get("publication_year") or 0)
+                authors = []
+                for auth in (r.get("authorships") or []):
+                    name = (auth.get("author") or {}).get("display_name") or auth.get("raw_author_name")
+                    if name:
+                        authors.append(clean_text(name).replace("Jüergen Gall", "Jürgen Gall"))
+                loc = r.get("primary_location") or {}
+                venue = clean_venue(((loc.get("source") or {}).get("display_name")) or "")
+                doi = normalize_doi(r.get("doi") or "")
+                landing = (loc.get("landing_page_url") or "").strip()
+                oa_url = ((r.get("open_access") or {}).get("oa_url") or "").strip()
+                oa_page = (r.get("id") or "").strip()
+
+                if landing.startswith(("http://", "https://")):
+                    chosen_url = landing
+                elif doi:
+                    chosen_url = f"https://doi.org/{doi}"
+                elif oa_url.startswith(("http://", "https://")):
+                    chosen_url = oa_url
+                elif oa_page.startswith(("http://", "https://")):
+                    chosen_url = oa_page
+                else:
+                    chosen_url = ""
+
+                entry = {
+                    "_cid": cid,
+                    "title": title,
+                    "authors": authors,
+                    "year": year,
+                    "venue": venue,
+                    "doi": doi,
+                    "url": chosen_url,
+                }
+
+                refs = {short_openalex_id(x) for x in (r.get("referenced_works") or [])}
+                for wid in (refs & chunk_set):
+                    citations_by_target[wid].append(entry)
+
+            next_cursor = ((data.get("meta") or {}).get("next_cursor"))
+            if not next_cursor or next_cursor == cursor:
+                break
+            cursor = next_cursor
+
+    return citations_by_target, had_error
+
+
 def main():
+    prev_by_doi = {}
+    prev_by_title = {}
+    if os.path.exists(OUTPUT_PATH):
+        try:
+            with open(OUTPUT_PATH, "r", encoding="utf-8") as f:
+                prev_data = json.load(f)
+            for pw in prev_data.get("publications", []):
+                p_doi = normalize_doi(pw.get("doi", ""))
+                p_title = normalize_title(pw.get("title", ""))
+                if p_doi:
+                    prev_by_doi[p_doi] = pw
+                if p_title:
+                    prev_by_title[p_title] = pw
+        except Exception as e:
+            print(f"[WARN] Could not read previous publications.json: {e}")
+
     print("Fetching ORCID works...")
     orcid_works = fetch_orcid_works()
     print(f" -> Found {len(orcid_works)} works on ORCID")
@@ -351,7 +517,73 @@ def main():
 
     merged = merge_publications(orcid_works, openalex_works, pinned_list)
 
-    # Back-populate pinned.json enriched fields (authors, doi, bibtex, links) if missing
+    # Resolve OpenAlex IDs via DOI for any works not already matched in author query
+    for work in merged:
+        if not work.get("openalex_ids") and work.get("doi"):
+            found = lookup_openalex_by_doi(work["doi"])
+            if found:
+                work["openalex_id"] = work.get("openalex_id") or found["openalex_id"]
+                work["openalex_ids"] = [found["short_id"]]
+                work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), found["cited_by_count"])
+
+    # Batch-fetch citing papers from OpenAlex
+    all_oa_ids = []
+    for work in merged:
+        all_oa_ids.extend(work.get("openalex_ids") or [])
+
+    print(f"Fetching citing papers for {len(set(all_oa_ids))} OpenAlex work IDs...")
+    citations_by_target, had_error = fetch_citing_works_map(all_oa_ids)
+
+    for work in merged:
+        work_oa_ids = set(work.get("openalex_ids") or [])
+        work_title_norm = normalize_title(work.get("title", ""))
+        work_doi = normalize_doi(work.get("doi", ""))
+
+        raw_citing = []
+        for wid in (work.get("openalex_ids") or []):
+            raw_citing.extend(citations_by_target.get(wid, []))
+
+        dedup_citing = []
+        seen_dois = set()
+        seen_titles = set()
+        for c in raw_citing:
+            if c.get("_cid") and c["_cid"] in work_oa_ids:
+                continue
+            c_title_norm = normalize_title(c.get("title", ""))
+            c_doi = normalize_doi(c.get("doi", ""))
+            if c_title_norm and c_title_norm == work_title_norm:
+                continue
+            if c_doi and work_doi and c_doi == work_doi:
+                continue
+            if c_doi and c_doi in seen_dois:
+                continue
+            if c_title_norm and c_title_norm in seen_titles:
+                continue
+            if c_doi:
+                seen_dois.add(c_doi)
+            if c_title_norm:
+                seen_titles.add(c_title_norm)
+            dedup_citing.append({
+                "title": c["title"],
+                "authors": c["authors"],
+                "year": c["year"],
+                "venue": c["venue"],
+                "doi": c["doi"],
+                "url": c["url"],
+            })
+
+        dedup_citing.sort(key=lambda x: (-(x.get("year") or 0), (x.get("title") or "").lower()))
+
+        if had_error and not dedup_citing:
+            prev_work = (prev_by_doi.get(work_doi) if work_doi else None) or prev_by_title.get(work_title_norm)
+            if prev_work and prev_work.get("citations"):
+                dedup_citing = prev_work["citations"]
+                work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), int(prev_work.get("cited_by_count") or 0))
+
+        work["citations"] = dedup_citing
+        work["cited_by_count"] = max(int(work.get("cited_by_count") or 0), len(dedup_citing))
+
+    # Back-populate pinned.json enriched fields (authors, doi, bibtex, links, citations)
     if pinned_list:
         for p in pinned_list:
             p_norm = normalize_title(p.get("match_title") or p.get("title", ""))
@@ -363,7 +595,10 @@ def main():
                         p["doi"] = m["doi"]
                     if not p.get("bibtex") and m.get("bibtex"):
                         p["bibtex"] = m["bibtex"]
+                    if m.get("openalex_id"):
+                        p["openalex_id"] = m["openalex_id"]
                     p["cited_by_count"] = int(m.get("cited_by_count") or 0)
+                    p["citations"] = m.get("citations", [])
                     if not p.get("links"):
                         links = []
                         if m.get("doi"):
@@ -390,7 +625,7 @@ def main():
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
-    print(f"Successfully wrote {len(merged)} merged publications to {OUTPUT_PATH}")
+    print(f"Successfully wrote {len(merged)} merged publications (total citations: {payload['total_citations']}) to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
