@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T12:12:55Z",
+  "updated_at": "2026-11-23T13:56:59Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
@@ -910,7 +910,13 @@
         },
         {
           "title": "Transdiagnostic approach in studying mental health conditions: The contribution of fundamental and translational brain research for precise interventions",
-          "authors": [],
+          "authors": [
+            "Sandra Carvalho",
+            "Jorge Leite",
+            "Wolnei Caumo",
+            "Lia Fernandes",
+            "Ana Rita Ferreira"
+          ],
           "year": 2026,
           "venue": "Frontiers research topics",
           "doi": "10.3389/978-2-8325-8000-4",
