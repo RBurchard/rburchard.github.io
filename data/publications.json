@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-25T13:48:25Z",
+  "updated_at": "2026-11-26T13:28:07Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
@@ -213,9 +213,9 @@
             "James Andrews"
           ],
           "year": 2026,
-          "venue": "University of Birmingham Research Portal (University of Birmingham)",
+          "venue": "arXiv Preprint",
           "doi": "10.48550/arxiv.2611.28033",
-          "url": "https://research.birmingham.ac.uk/en/publications/1cff8467-2d8f-4a59-8706-9ce7e2dd2aa4"
+          "url": "https://arxiv.org/abs/2611.28033"
         }
       ]
     },
