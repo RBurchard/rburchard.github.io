@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-11-26T13:28:07Z",
+  "updated_at": "2026-11-27T13:25:08Z",
   "orcid": "0000-0002-4130-5287",
   "openalex_id": "A5084607935",
   "count": 14,
-  "total_citations": 59,
+  "total_citations": 60,
   "stats": {
     "total_publications": 14,
-    "total_citations": 59,
+    "total_citations": 60,
     "h_index": 4,
     "first_author_count": 7,
     "equal_first_author_count": 1,
@@ -26,7 +26,7 @@
       },
       {
         "year": 2026,
-        "count": 37
+        "count": 38
       }
     ]
   },
@@ -703,7 +703,7 @@
       ],
       "abstract": "In this study, we provide a detailed analysis of data augmentation techniques applied to inertial sensor data from the WEAR Dataset, aimed at improving Human Activity Recognition (HAR) in the WEAR Challenge. Augmentation techniques such as CutMix, MixUp, jittering, magnitude scaling were employed to enhance the diversity and robustness of the training dataset. These techniques aim to mitigate the challenges posed by limited and imbalanced datasets commonly encountered in wearable sensor data. We systematically applied these augmentation methods to a standard inertial dataset and evaluated their impact on the performance of various machine learning models. Our experimental results demonstrate significant improvements (about 3% increase in F1-Score and about 8% increase in Recall) in classification accuracy and model generalization, highlighting the efficacy of data augmentation in HAR applications.",
       "openalex_id": "https://openalex.org/W4402721823",
-      "cited_by_count": 2,
+      "cited_by_count": 3,
       "bibtex": "@inproceedings{salunkhe2024augmentation,\n  title = {Augmentation Appproaches to Refine Wearable Human Activity Recognition},\n  author = {Somesh Salunkhe and Shubham Shinde and Pradnyesh Patil and Robin Burchard},\n  year = {2024},\n  booktitle = {ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp)},\n  doi = {10.1145/3675094.3678464},\n}",
       "citations": [
         {
@@ -719,6 +719,21 @@
           "venue": "IEEE Internet of Things Journal",
           "doi": "10.1109/jiot.2026.3716688",
           "url": "https://doi.org/10.1109/jiot.2026.3716688"
+        },
+        {
+          "title": "Multi-window spatio-temporal feature representation for wearable sensor-based human activity recognition",
+          "authors": [
+            "Asmaa Badran",
+            "Nashwa Nageh Ahmed",
+            "Yasser Fouad",
+            "Nada Mohamed Osman Sid Ahmed",
+            "A. A. Soliman",
+            "Mahmoud M. Elarabawy"
+          ],
+          "year": 2026,
+          "venue": "Discover Computing",
+          "doi": "10.1007/s10791-026-10873-9",
+          "url": "https://doi.org/10.1007/s10791-026-10873-9"
         },
         {
           "title": "A Feature-Augmented Transformer Model to Recognize Functional Activities From in-the-Wild Smartwatch Data",
